@@ -1,7 +1,8 @@
 import pandas as pd
 
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth, association_rules
+from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth, \
+    association_rules
 
 import visualize
 
@@ -58,7 +59,6 @@ def encode_data(datapoint: int) -> int:
         return 1
 
 
-# TODO use the example from the mlxtend documentation
 def generate_demo_data() -> pd.DataFrame:
     """Create data from the mlxtend examples
 
@@ -95,27 +95,58 @@ def generate_retail_data() -> pd.DataFrame:
     return market_basket
 
 
-def main():
-    market_basket = generate_retail_data
-    itemsets = apriori(market_basket, min_support=0.03, use_colnames=True)
-    rules = association_rules(
-        itemsets,
-        metric='lift',
-        min_threshold=1
-    )
-    # visualize.plot_heatmap(rules)
-    visualize.draw_graph(rules, 14)
-
-
-if __name__ == '__main__':
+def run_demo() -> None:
+    """ Create heatmaps of the mlxtend examples
+    """
     one_hot_df = generate_demo_data()
     frequent_itemsets = fpgrowth(one_hot_df,
                                  min_support=0.6,
                                  use_colnames=True)
-    rules = association_rules(frequent_itemsets,
-                              metric="confidence",
-                              min_threshold=0.7)
-    rules = association_rules(frequent_itemsets,
-                              metric="lift",
-                              min_threshold=1.2)
-    visualize.draw_graph(rules, 5)
+    rules_conf = association_rules(frequent_itemsets,
+                                   metric="confidence",
+                                   min_threshold=0.7)
+    rules_lift = association_rules(frequent_itemsets,
+                                   metric="lift",
+                                   min_threshold=1.2)
+    visualize.plot_heatmap_seaborn(rules_conf, plot_val='confidence')
+    visualize.plot_heatmap_seaborn(rules_lift, plot_val='lift')
+
+
+def run_retail_demo(read_rules: bool=True) -> None:
+    """Create plots of the online retail data
+
+    Args:
+        read_rules (bool, optional): Read association rules from file.
+        Generates them otherwise. Defaults to True.
+    """
+    if read_rules:
+        xl = pd.ExcelFile('AssociationRules.xlsx')
+        dfs = {sh: xl.parse(sh) for sh in xl.sheet_names}
+        for key, val in dfs.items():
+            for name in ['antecedents', 'consequents']:
+                dfs[key][name] = val[name].apply(lambda x: eval(x))
+        rules_conf = dfs['confidence']
+        rules_lift = dfs['lift']
+        rules_leverage = dfs['leverage']
+    else:
+        market_basket = generate_retail_data()
+        itemsets = apriori(market_basket, min_support=0.03, use_colnames=True)
+        rules_lift = association_rules(
+            itemsets,
+            metric='lift',
+            min_threshold=1
+        )
+        rules_conf = association_rules(
+            itemsets,
+            metric='confidence',
+            min_threshold=0.5
+        )
+        rules_leverage = association_rules(
+            itemsets,
+            metric='leverage',
+            min_threshold=0.03
+        )
+
+    visualize.plot_heatmap_seaborn(rules_lift, 'lift')
+    visualize.plot_heatmap_seaborn(rules_conf, 'confidence')
+    visualize.plot_heatmap_seaborn(rules_leverage, 'leverage')
