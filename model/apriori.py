@@ -146,7 +146,6 @@ def run_retail_demo(read_rules: bool=True) -> None:
             metric='leverage',
             min_threshold=0.03
         )
-
-    visualize.plot_heatmap_seaborn(rules_lift, 'lift')
-    visualize.plot_heatmap_seaborn(rules_conf, 'confidence')
-    visualize.plot_heatmap_seaborn(rules_leverage, 'leverage')
+    visualize.plot_heatmap_plotly(rules_lift, 'lift')
+    visualize.plot_heatmap_plotly(rules_conf, 'confidence')
+    visualize.plot_heatmap_plotly(rules_leverage, 'leverage')
