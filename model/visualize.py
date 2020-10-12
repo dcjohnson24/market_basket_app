@@ -6,11 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-import mpld3
 
 
-# TODO Turn this into a Bokeh heatmap
-def plot_heatmap(rules: pd.DataFrame) -> None:
+def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
     rules['antecedents_'] = rules['antecedents'].apply(
         lambda a: ','.join(list(a))
     )
@@ -20,12 +18,16 @@ def plot_heatmap(rules: pd.DataFrame) -> None:
     pivot = rules.pivot(
         index='antecedents_',
         columns='consequents_',
-        values='lift'
+        values=plot_val
     )
     sns.heatmap(pivot, annot=True)
     plt.yticks(rotation=0)
-    plt.xticks(rotation=30)
-    mpld3.show()
+    plt.xticks(rotation=90)
+    plt.xlabel('Consequents')
+    plt.ylabel('Antecedents')
+    plt.title(f'{plot_val}'.title())
+    plt.tight_layout()
+    plt.show()
 
 
 def draw_graph(rules: pd.DataFrame, rules_to_show: int) -> None:
@@ -67,5 +69,5 @@ def draw_graph(rules: pd.DataFrame, rules_to_show: int) -> None:
     for p in pos:  # raise text positions
         pos[p][1] += 0.07
     nx.draw_networkx_labels(G1, pos)
-    mpld3.show()
-    
+    plt.show()
+
