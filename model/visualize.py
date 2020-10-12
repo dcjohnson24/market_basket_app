@@ -6,15 +6,63 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+import plotly.graph_objects as go
 
 
-def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
+def remove_frozensets(rules: pd.DataFrame) -> pd.DataFrame:
+    """ Convert frozen sets from mlxtend to comma separated lists
+
+    Args:
+        rules (pd.DataFrame): assocation rules generated
+            with association_rules function of mlxtend
+
+    Returns:
+        pd.DataFrame: DataFrame with antecendents and consequents columns
+            of type list.
+    """
     rules['antecedents_'] = rules['antecedents'].apply(
         lambda a: ','.join(list(a))
     )
     rules['consequents_'] = rules['consequents'].apply(
         lambda a: ','.join(list(a))
     )
+    return rules
+
+
+def plot_heatmap_plotly(rules: pd.DataFrame, plot_val: str) -> None:
+    """ Plot an interactive heatmap
+
+    Args:
+        rules (pd.DataFrame): association rules from mlxtend
+        plot_val (str): The metric to use for the heatmap such as
+            confidence, lift, or leverage
+    """
+    rules = remove_frozensets(rules)
+
+    fig = go.Figure(data=go.Heatmap(
+        x=rules['antecedents_'],
+        y=rules['consequents_'],
+        z=rules[plot_val],
+        hoverongaps=False
+    ))
+
+    fig.update_layout(
+        title=f'{plot_val}'.title(),
+        xaxis_title='Antecedents',
+        yaxis_title='Consequents'
+    )
+    fig.show()
+
+
+def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
+    """ Plot a static heatmap
+
+    Args:
+        rules (pd.DataFrame): association rules from mlxtend
+        plot_val (str): The metric to use for the heatmap such as
+            confidence, lift, or leverage
+    """
+    rules = remove_frozensets(rules)
     pivot = rules.pivot(
         index='antecedents_',
         columns='consequents_',
