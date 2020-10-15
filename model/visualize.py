@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
 import plotly.graph_objects as go
+from d3graph import d3graph, vec2adjmat
 
 
 def remove_frozensets(rules: pd.DataFrame) -> pd.DataFrame:
@@ -26,6 +27,9 @@ def remove_frozensets(rules: pd.DataFrame) -> pd.DataFrame:
     rules['consequents_'] = rules['consequents'].apply(
         lambda a: ','.join(list(a))
     )
+    rules['antecedents_'] = rules['antecedents_'].str.strip()
+    rules['consequents_'] = rules['consequents_'].str.strip()
+
     return rules
 
 
@@ -78,6 +82,87 @@ def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
     plt.show()
 
 
+def plot_network_graph_d3(rules: pd.DataFrame, weight_var: str) -> None:
+    rules = remove_frozensets(rules)
+    adjmat = vec2adjmat(source=rules['antecedents_'],
+                        target=rules['consequents_'])
+    node_size = rules[f'{weight_var}'].tolist()
+    d3graph(adjmat, node_size_edge=node_size, directed=True)
+
+
+def plot_network_graph(rules: pd.DataFrame, weight_var: str) -> None:
+    rules = remove_frozensets(rules)
+    G1 = nx.from_pandas_edgelist(
+        rules,
+        source='antecedents_',
+        target='consequents_',
+        edge_attr=f'{weight_var}',
+        create_using=nx.DiGraph
+    )
+    pos = nx.spring_layout(G1, k=0.5)
+    for n, p in pos.items():
+        G1.nodes[n]['pos'] = p
+
+    edge_trace = go.Scatter(
+        x=[],
+        y=[],
+        line=dict(width=0.5, color='#888'),
+        hoverinfo='none',
+        mode='lines'
+    )
+
+    xmids = []
+    ymids = []
+
+    for edge in G1.edges():
+        x0, y0 = G1.nodes[edge[0]]['pos']
+        x1, y1 = G1.nodes[edge[1]]['pos']
+        xmids.append((x0 + x1)/2)
+        ymids.append((y0 + y1)/2)
+        edge_trace['x'] += tuple([x0, x1, None])
+        edge_trace['y'] += tuple([y0, y1, None])
+
+    etext = [f'weight: {w}' for w in
+             list(nx.get_edge_attributes(G1, f'{weight_var}').values())]
+
+    eweights_trace = go.Scatter(
+        x=xmids,
+        y=ymids,
+        mode='markers',
+        marker=dict(color='rgb(125,125,125)', size=1),
+        text=etext,
+        hoverinfo='text'
+    )
+
+    node_trace = go.Scatter(
+        x=[],
+        y=[],
+        text=list(G1.nodes),
+        mode='markers',
+        hoverinfo='text',
+        marker_size=15,
+        marker_color='RoyalBlue'
+    )
+
+    for node in G1.nodes():
+        x, y = G1.nodes[node]['pos']
+        node_trace['x'] += tuple([x])
+        node_trace['y'] += tuple([y])
+
+    fig = go.Figure(
+        data=[edge_trace, node_trace, eweights_trace],
+        layout=go.Layout(
+            title='<br>Retail Items Network Connections',
+            titlefont=dict(size=16),
+            showlegend=False,
+            hovermode='closest',
+            margin=dict(b=20, l=5, r=5, t=40),
+            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
+    )
+    fig.show()
+
+
 def draw_graph(rules: pd.DataFrame, rules_to_show: int) -> None:
     G1 = nx.DiGraph()
     color_map = []
@@ -118,4 +203,3 @@ def draw_graph(rules: pd.DataFrame, rules_to_show: int) -> None:
         pos[p][1] += 0.07
     nx.draw_networkx_labels(G1, pos)
     plt.show()
-
