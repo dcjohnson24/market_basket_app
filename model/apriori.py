@@ -1,10 +1,11 @@
+from collections import namedtuple
+
 import pandas as pd
 
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, fpmax, fpgrowth, \
-    association_rules
+from mlxtend.frequent_patterns import apriori, association_rules
 
-import visualize
+Rules = namedtuple('Rules', ['confidence', 'lift', 'leverage'])
 
 
 def read_input_data(file_name: str) -> pd.DataFrame:
@@ -33,7 +34,7 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame with missing rows and credits dropped.
     """
-    targets = ['invoice', 'quantity', 'description', 'code']
+    targets = ['invoice', 'quantity', 'description']
     for target in targets:
         in_cols = df.columns.str.contains(target, case=False).sum()
         if not in_cols:
@@ -59,65 +60,121 @@ def encode_data(datapoint: int) -> int:
         return 1
 
 
-def generate_demo_data() -> pd.DataFrame:
-    """Create data from the mlxtend examples
-
-    Returns:
-        pd.DataFrame: A one hot encoded dataframe
-    """
-    dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
-           ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
-           ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
-           ['Milk', 'Unicorn', 'Corn', 'Kidney Beans', 'Yogurt'],
-           ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
-    te = TransactionEncoder()
-    te_ary = te.fit(dataset).transform(dataset)
-    return pd.DataFrame(te_ary, columns=te.columns_)
-
-
-def generate_retail_data() -> pd.DataFrame:
-    """Create one hot encoded retail data
+def count_items_per_transaction(df: pd.DataFrame) -> pd.DataFrame:
+    """ Count the number of items by InvoiceNo and Description
 
     Args:
-        file_name (str): Name of retail data file e.g. OnlineRetail.xlsx
+        df (pd.DataFrame): DataFrame with columns
+            InvoiceNo, Description, and Quantity
 
     Returns:
-        pd.DataFrame: A one hot encoded DataFrame of retail items
+        pd.DataFrame: A one hot encoded DataFrame where the rows are
+            InvoiceNos and the columns are Descriptions.
     """
-    df = read_input_data('OnlineRetail.xlsx')
-    new_df = prepare_data(df)
-    market_basket = new_df[new_df['Country'] == "United Kingdom"].groupby(
+    market_basket = df.groupby(
         ['InvoiceNo', 'Description'])['Quantity']
     market_basket = market_basket.sum().unstack().reset_index().fillna(0).\
         set_index('InvoiceNo')
     market_basket = market_basket.applymap(encode_data)
-    market_basket.drop('POSTAGE', inplace=True, axis=1)
     return market_basket
 
 
-def run_demo() -> None:
-    """ Create heatmaps of the mlxtend examples
+def make_rules(
+        one_hot_df: pd.DataFrame,
+        min_support: float = 0.03,
+        lift_thresh: float = 1,
+        conf_thresh: float = 0.5,
+        lev_thresh: float = 0.03) -> Rules:
+    """ Make association rules DataFrames based on confidence, lift,
+        and leverage
+
+    Args:
+        one_hot_df (pd.DataFrame): a one hot encoded DataFrame with
+            rows as InvoiceNos and columns as Descriptions
+        min_support (float, optional): The support threshold for generating
+            frequent itemsets. Defaults to 0.03.
+        lift_thresh (float, optional): The threshold for calculating
+            lift metrics. Defaults to 1.
+        conf_thresh (float, optional): The threshold for calculating
+            confidence metrics. Defaults to 0.5.
+        lev_thresh (float, optional): The threshold for calculating leverage
+            metrics. Defaults to 0.03.
+
+    Returns:
+        Rules: Assocation rules DataFrames for confidence,
+            lift, and leverage metrics.
     """
-    one_hot_df = generate_demo_data()
-    frequent_itemsets = fpgrowth(one_hot_df,
-                                 min_support=0.6,
-                                 use_colnames=True)
-    rules_conf = association_rules(frequent_itemsets,
-                                   metric="confidence",
-                                   min_threshold=0.7)
-    rules_lift = association_rules(frequent_itemsets,
-                                   metric="lift",
-                                   min_threshold=1.2)
-    visualize.plot_heatmap_seaborn(rules_conf, plot_val='confidence')
-    visualize.plot_heatmap_seaborn(rules_lift, plot_val='lift')
+    itemsets = apriori(
+        one_hot_df,
+        min_support=min_support,
+        use_colnames=True
+    )
+
+    rules_lift = association_rules(
+            itemsets,
+            metric='lift',
+            min_threshold=lift_thresh
+        )[['antecedents', 'consequents', 'lift']]
+
+    rules_conf = association_rules(
+        itemsets,
+        metric='confidence',
+        min_threshold=conf_thresh
+    )[['antecedents', 'consequents', 'confidence']]
+
+    rules_leverage = association_rules(
+        itemsets,
+        metric='leverage',
+        min_threshold=lev_thresh
+    )[['antecedents', 'consequents', 'leverage']]
+
+    return Rules(
+        confidence=rules_conf,
+        lift=rules_lift,
+        leverage=rules_leverage
+    )
 
 
-def run_retail_demo(read_rules: bool=True) -> None:
-    """Create plots of the online retail data
+def rules_from_user_upload(file_name: str):
+    df = read_input_data(file_name)
+    df = prepare_data(df)
+    one_hot_df = count_items_per_transaction(df)
+    return make_rules(one_hot_df)
 
+
+def run_demo() -> Rules:
+    """ Calculates rules from mlxtend sample dataset
+
+    Returns:
+        Rules: DataFrames of association rules for lift, confidence,
+            and leverage metrics.
+    """
+    dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
+               ['Milk', 'Unicorn', 'Corn', 'Kidney Beans', 'Yogurt'],
+               ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
+    te = TransactionEncoder()
+    te_ary = te.fit(dataset).transform(dataset)
+    one_hot_df = pd.DataFrame(te_ary, columns=te.columns_)
+    return make_rules(
+        one_hot_df,
+        min_support=0.6,
+        conf_thresh=0.7,
+        lift_thresh=1.2
+    )
+
+
+def run_retail_demo(read_rules: bool = True) -> Rules:
+    """ Create association rules from Online Retail dataset
+        https://pythondata.com/market-basket-analysis-with-python-and-pandas/
     Args:
         read_rules (bool, optional): Read association rules from file.
         Generates them otherwise. Defaults to True.
+
+    Returns:
+        Rules: DataFrames of association rules for lift, confidence,
+            and leverage metrics.
     """
     if read_rules:
         xl = pd.ExcelFile('AssociationRules.xlsx')
@@ -125,27 +182,23 @@ def run_retail_demo(read_rules: bool=True) -> None:
         for key, val in dfs.items():
             for name in ['antecedents', 'consequents']:
                 dfs[key][name] = val[name].apply(lambda x: eval(x))
-        rules_conf = dfs['confidence']
-        rules_lift = dfs['lift']
-        rules_leverage = dfs['leverage']
+        rules = Rules(
+            confidence=dfs['confidence'][[
+                'antecedents',
+                'consequents',
+                'confidence']],
+            lift=dfs['lift'][['antecedents', 'consequents', 'lift']],
+            leverage=dfs['leverage'][[
+                'antecedents',
+                'consequents',
+                'leverage']]
+        )
     else:
-        market_basket = generate_retail_data()
-        itemsets = apriori(market_basket, min_support=0.03, use_colnames=True)
-        rules_lift = association_rules(
-            itemsets,
-            metric='lift',
-            min_threshold=1
-        )
-        rules_conf = association_rules(
-            itemsets,
-            metric='confidence',
-            min_threshold=0.5
-        )
-        rules_leverage = association_rules(
-            itemsets,
-            metric='leverage',
-            min_threshold=0.03
-        )
-    visualize.plot_heatmap_plotly(rules_lift, 'lift')
-    visualize.plot_heatmap_plotly(rules_conf, 'confidence')
-    visualize.plot_heatmap_plotly(rules_leverage, 'leverage')
+        df = read_input_data('OnlineRetail.xlsx')
+        new_df = prepare_data(df)
+        uk_df = new_df[new_df['Country'] == "United Kingdom"]
+        market_basket = count_items_per_transaction(uk_df)
+        market_basket.drop('POSTAGE', inplace=True, axis=1)
+        rules = make_rules(market_basket)
+
+    return rules
