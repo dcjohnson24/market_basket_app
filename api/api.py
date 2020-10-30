@@ -54,8 +54,13 @@ def upload_files():
         )
         app.logger.info('Done!')
         app.logger.info(f'transactions_df.shape={transactions_df.shape}')
-        return redirect(url_for('main.display_association_rules'))
+        return redirect(url_for('main.completed'))
     return render_template('index.html')
+
+
+@main.route('/completed')
+def completed():
+    return render_template('completed.html')
 
 
 @main.route('/demo', methods=['GET'])
@@ -67,14 +72,17 @@ def view_demo():
 
 @main.route('/compute_rules', methods=['GET', 'POST'])
 def display_association_rules():
-    return render_template('tables.html')
     df = pd.read_sql_table('transactions', con=db.engine)
-    metric = request.get_json()['metric']
+    metric = request.form.get('metric')
+    app.logger.info(f'metric uploaded as {metric}')
     rules = apriori.rules_from_user_upload(df)
     # TODO display rules_dict[metric] as DataFrame to user
     rules_table = rules._asdict()[metric]
     app.logger.info(f'{rules_table}')
-    return render_template('table.html', table=rules_table.to_html(classes='rules'))
+    return render_template(
+        'tables.html',
+        metric=metric,
+        table=rules_table.to_html(index=False, classes='rules'))
 
 
 @main.route('/heatmap', methods=['GET'])

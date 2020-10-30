@@ -1,22 +1,14 @@
 <html>
   <head>
     <title>File Upload</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7') }}
   </head>
   <body>
     <h1>File Upload</h1>
-    <form action="{{ url_for('main.upload_files') }}" class="dropzone" id="myDropzone">
-    </form>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
-    <script type='text/javascript'>
-      Dropzone.options.myDropzone = {
-        addRemoveLinks: true,
-        removedfile: function(file) { 
-          var _ref;
-          return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
-        }
-      };
-    </script>
+    {{ dropzone.create('main.upload_files') }}
+    {{ dropzone.load_js() }}
+    {{ dropzone.config() }}
     <div id='content'>{% block content %}{% endblock %}</div>
   </body>
 </html>

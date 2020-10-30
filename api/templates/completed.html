@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<body>
+    <div>
+        File upload successful!
+        <form action="{{ url_for('main.display_association_rules') }}" method="post">
+            <label for="metric">Enter metric of interest</label>
+            <select name="metric">
+                <option value='confidence'>confidence</option>
+                <option value='lift'>lift</option>
+                <option value='leverage'>leverage</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
