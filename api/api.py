@@ -74,11 +74,9 @@ def view_demo():
 def display_association_rules():
     df = pd.read_sql_table('transactions', con=db.engine)
     metric = request.form.get('metric')
-    app.logger.info(f'metric uploaded as {metric}')
+    app.logger.info(f'{metric} metric uploaded')
     rules = apriori.rules_from_user_upload(df)
-    # TODO display rules_dict[metric] as DataFrame to user
     rules_table = rules._asdict()[metric]
-    app.logger.info(f'{rules_table}')
     return render_template(
         'tables.html',
         metric=metric,

@@ -7,4 +7,9 @@
         <h1>Association rules for {{ metric }}</h1>
         <h2>{{ table|safe }} </h2>
     </div>
+    <div>
+        <form action="{{ url_for('main.completed') }}">
+            <button>Back</button>
+        </form>
+    </div>
 </html>
