@@ -135,8 +135,7 @@ def make_rules(
     )
 
 
-def rules_from_user_upload(file_name: str):
-    df = read_input_data(file_name)
+def rules_from_user_upload(df):
     df = prepare_data(df)
     one_hot_df = count_items_per_transaction(df)
     return make_rules(one_hot_df)
