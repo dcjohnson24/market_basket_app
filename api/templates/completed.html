@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
     <script type="text/javascript">
         function showDiv() {
             document.getElementById('content').style.display = "none";
             document.getElementsByClassName('loading')[0].style.display = "block";
         }
     </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
 </head>
 <body>
     <div id="content">
@@ -23,6 +23,8 @@
     <div class="loading" style="display: none;">     
         </form>
         <p>Loading...</p>
-        <div id="loadingGif"></div>
+        <div class="loadingImg">
+            <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
+        </div>
     </div> 
 </body>
