@@ -2,29 +2,91 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
     <script type="text/javascript">
-        function showDiv() {
-            document.getElementById('content').style.display = "none";
-            document.getElementsByClassName('loading')[0].style.display = "block";
+        function showDiv(className) {
+            document.getElementsByClassName(className)[0].style.display = 'block'; 
         }
+    </script>
+    <script type='text/javascript'>
+        function post(path, params, method='post') {
+            // The rest of this code assumes you are not using a library.
+            // It can be made less wordy if you use one.
+            const form = document.createElement('form');
+            form.method = method;
+            form.action = path;
+
+            for (const key in params) {
+                if (params.hasOwnProperty(key)) {
+                    const hiddenField = document.createElement('input');
+                    hiddenField.type = 'hidden';
+                    hiddenField.name = key;
+                    hiddenField.value = params[key];
+
+                    form.appendChild(hiddenField);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+        window.addEventListener('load', () => {
+            document.getElementById('btn_table').addEventListener('click', () => {
+                showDiv('loading');
+                post(
+                    "{{ url_for('main.display_association_rules') }}", 
+                    {'metric': document.getElementById('metric').value}
+                );
+            });
+            document.getElementById('btn_heatmap').addEventListener('click', () => {
+                showDiv('loading');
+                post(
+                    "{{ url_for('main.plot_heatmap') }}",
+                    {'metric' : document.getElementById('metric').value}
+                );
+            });
+            document.getElementById('btn_graph').addEventListener('click', () => {
+                showDiv('loading');
+                post(
+                    "{{ url_for('main.plot_network_graph') }}",
+                    {'metric': document.getElementById('metric').value}
+                );
+            });
+        });
+                 
     </script>
 </head>
 <body>
     <div id="content">
         <p>File upload successful!</p>
-        <form action="{{ url_for('main.display_association_rules') }}" method="post">
-            <label for="metric">Enter metric of interest</label>
-            <select name="metric">
+        <form>
+            <label for="metric">Select metric of interest</label>
+            <select id="metric">
                 <option value='confidence'>confidence</option>
                 <option value='lift'>lift</option>
                 <option value='leverage'>leverage</option>
-            </select>  
-            <input type="submit" value="Submit" onclick="showDiv()">
+            </select>
+            <input type="submit" value="Submit" 
+                onclick="['table', 'graph', 'heatmap'].map(showDiv); return false;"/> 
+        </form>
     </div>
-    <div class="loading" style="display: none;">     
+    <div class="loading">     
         </form>
         <p>Loading...</p>
-        <div class="loadingImg">
+        <div class="loadingGif">
             <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
         </div>
+    </div>
+    <div class="table">
+        <button id="btn_table">
+            View Table
+        </button>
+    </div>
+    <div class="graph">
+        <button id="btn_graph">
+            View Graph
+        </button>
+    </div>
+    <div class="heatmap">
+        <button id="btn_heatmap">
+            View Heatmap
+        </button>
     </div> 
 </body>
