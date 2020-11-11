@@ -1,3 +1,4 @@
+{% from "macros.html" import selection %}
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
@@ -11,16 +12,7 @@
 <body>
     <div id="content">
         <p>File upload successful!</p>
-        <form>
-            <label for="metric">Select metric of interest</label>
-            <select id="metric">
-                <option value='confidence'>confidence</option>
-                <option value='lift'>lift</option>
-                <option value='leverage'>leverage</option>
-            </select>
-            <input type="submit" value="Submit" 
-                onclick="['table', 'graph', 'heatmap'].map(showDiv); return false;"/> 
-        </form>
+        {{ selection() }}
     </div>
     <div class="loading">     
         </form>

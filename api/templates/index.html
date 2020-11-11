@@ -1,8 +1,14 @@
 <html>
   <head>
+    <script src="{{ url_for('static', filename='submit.js') }}"></script>
+    <script>
+      let demo_page = "{{ url_for('main.demo_selection') }}";
+      let view_demo = "{{ url_for('main.view_demo') }}";
+    </script>
     <title>File Upload</title>
     {{ dropzone.load_css() }}
     {{ dropzone.style('border: 2px dashed #0087F7') }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
   </head>
   <body>
     <h1>File Upload</h1>

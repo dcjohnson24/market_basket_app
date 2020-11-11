@@ -32,7 +32,7 @@ def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('demo.html')
 
 
 @main.route('/', methods=['POST'])
@@ -61,7 +61,7 @@ def upload_files():
         app.logger.info('Done!')
         app.logger.info(f'transactions_df.shape={transactions_df.shape}')
         return redirect(url_for('main.completed'))
-    return render_template('index.html')
+    return render_template('demo.html')
 
 
 @main.route('/completed')
@@ -69,11 +69,22 @@ def completed():
     return render_template('completed.html')
 
 
-@main.route('/demo')
+@main.route('/demo_selection')
+def demo_selection():
+    return render_template('demo_selection.html')
+
+
+@main.route('/demo', methods=['POST'])
 def view_demo():
-    metric = request.get_json()['metric']
-    rules = apriori.run_retail_demo()
-    print(rules._asdict()[metric])
+    metric = request.form.get('metric')
+    app.logger.info(f'metric {metric} has been passed to view_demo!')
+    rules = apriori.run_demo()
+    rules_df = rules._asdict()[metric]
+    return render_template(
+        'tables.html',
+        metric=metric,
+        table=rules_df.to_html(index=False, classes='rules')
+    )
 
 
 @main.route('/compute_rules', methods=['POST'])
@@ -91,11 +102,14 @@ def plot_heatmap():
     plot_heatmap_plotly(rules_table, metric)
     return 'Ok'
 
+
 @main.route('/network_graph', methods=['POST'])
 def plot_network_graph():
     rules_table, metric = generate_rules_from_json()
+    app.logger.info('Starting the network graph plots')
     plot_network_graph_plotly(rules_table, metric)
     return 'Ok'
+
 
 @main.errorhandler(413)
 def too_large(error):
