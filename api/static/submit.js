@@ -63,6 +63,7 @@ window.addEventListener('load', () => {
         .getElementsByTagName('input')[0]
         .addEventListener('click', event => {
             event.preventDefault();
+            showDiv('loading');
             post(
                 view_demo,
                 {'metric': document.getElementById('metric').value}

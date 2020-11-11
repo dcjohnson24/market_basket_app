@@ -1,4 +1,4 @@
-{% from "macros.html" import selection %}
+{% from "macros.html" import selection, loading %}
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
@@ -14,13 +14,7 @@
         <p>File upload successful!</p>
         {{ selection() }}
     </div>
-    <div class="loading">     
-        </form>
-        <p>Loading...</p>
-        <div class="loadingGif">
-            <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
-        </div>
-    </div>
+    {{ loading() }}
     <div class="table">
         <button id="btn_table">
             View Table

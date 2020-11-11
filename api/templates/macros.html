@@ -11,3 +11,11 @@
         </form>
     </div>
 {% endmacro %}
+{% macro loading() %}
+    <div class="loading">     
+        <p>Loading...</p>
+        <div class="loadingGif">
+            <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
+        </div>
+    </div>
+{% endmacro %}
