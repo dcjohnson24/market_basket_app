@@ -7,6 +7,7 @@ load_dotenv(path.join(basedir, '.env'))
 
 class Config:
     """Base config."""
+    SEND_FILE_MAX_AGE_DEFAULT = 0
     SECRET_KEY = environ.get('SECRET_KEY')
     SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'

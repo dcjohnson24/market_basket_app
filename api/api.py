@@ -6,6 +6,8 @@ sys.path.append(os.pardir)
 path = dirname(dirname(abspath(__file__)))
 sys.path.append(join(path, 'model'))
 
+from typing import Tuple
+
 from flask import Flask, request, jsonify, redirect, url_for, \
     render_template, abort, Blueprint
 from flask import current_app as app
@@ -21,12 +23,16 @@ from . import db
 main = Blueprint('main', __name__)
 
 
-# TODO create a database so that once the data is uploaded it
-# can be passed around.
-# Figure out better display method of Pandas DataFrame.
+def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
+    df = pd.read_sql_table('transactions', con=db.engine)
+    metric = request.form.get('metric')
+    rules = apriori.rules_from_user_upload(df)
+    return rules._asdict()[metric], metric
+
+
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('demo.html')
 
 
 @main.route('/', methods=['POST'])
@@ -55,7 +61,7 @@ def upload_files():
         app.logger.info('Done!')
         app.logger.info(f'transactions_df.shape={transactions_df.shape}')
         return redirect(url_for('main.completed'))
-    return render_template('index.html')
+    return render_template('demo.html')
 
 
 @main.route('/completed')
@@ -63,40 +69,46 @@ def completed():
     return render_template('completed.html')
 
 
-@main.route('/demo', methods=['GET'])
+@main.route('/demo_selection')
+def demo_selection():
+    return render_template('demo_selection.html')
+
+
+@main.route('/demo', methods=['POST'])
 def view_demo():
-    metric = request.get_json()['metric']
-    rules = apriori.run_retail_demo()
-    print(rules._asdict()[metric])
-
-
-@main.route('/compute_rules', methods=['GET', 'POST'])
-def display_association_rules():
-    df = pd.read_sql_table('transactions', con=db.engine)
     metric = request.form.get('metric')
-    app.logger.info(f'{metric} metric uploaded')
-    rules = apriori.rules_from_user_upload(df)
-    rules_table = rules._asdict()[metric]
+    app.logger.info(f'metric {metric} has been passed to view_demo!')
+    rules = apriori.run_demo()
+    rules_df = rules._asdict()[metric]
+    return render_template(
+        'tables.html',
+        metric=metric,
+        table=rules_df.to_html(index=False, classes='rules')
+    )
+
+
+@main.route('/compute_rules', methods=['POST'])
+def display_association_rules():
+    rules_table, metric = generate_rules_from_json()
     return render_template(
         'tables.html',
         metric=metric,
         table=rules_table.to_html(index=False, classes='rules'))
 
 
-@main.route('/heatmap', methods=['GET'])
+@main.route('/heatmap', methods=['POST'])
 def plot_heatmap():
-    req = request.files.get('file')
-    metric = request.get_json()['metric']
-    rules = apriori.rules_from_user_upload(req)
-    plot_heatmap_plotly(rules._asdict[metric], metric)
+    rules_table, metric = generate_rules_from_json()
+    plot_heatmap_plotly(rules_table, metric)
+    return 'Ok'
 
 
-@main.route('/network_graph', methods=['GET'])
+@main.route('/network_graph', methods=['POST'])
 def plot_network_graph():
-    req = request.files.get('file')
-    metric = request.get_json()['metric']
-    rules = apriori.rules_from_user_upload(req)
-    plot_network_graph_plotly(rules._asdict()[metric], metric)
+    rules_table, metric = generate_rules_from_json()
+    app.logger.info('Starting the network graph plots')
+    plot_network_graph_plotly(rules_table, metric)
+    return 'Ok'
 
 
 @main.errorhandler(413)

@@ -159,8 +159,8 @@ def run_demo() -> Rules:
     return make_rules(
         one_hot_df,
         min_support=0.6,
-        conf_thresh=0.7,
-        lift_thresh=1.2
+        conf_thresh=0.6,
+        lift_thresh=1.0,
     )
 
 

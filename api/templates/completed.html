@@ -1,30 +1,33 @@
+{% from "macros.html" import selection, loading %}
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
-    <script type="text/javascript">
-        function showDiv() {
-            document.getElementById('content').style.display = "none";
-            document.getElementsByClassName('loading')[0].style.display = "block";
-        }
+    <script>
+        let display_association_rules = "{{ url_for('main.display_association_rules') }}";
+        let plot_network_graph = "{{ url_for('main.plot_network_graph') }}";
+        let plot_heatmap = "{{ url_for('main.plot_heatmap') }}";
     </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='submit.js') }}"></script>
 </head>
 <body>
-    <div id="content">
+    <div class="content">
         <p>File upload successful!</p>
-        <form action="{{ url_for('main.display_association_rules') }}" method="post">
-            <label for="metric">Enter metric of interest</label>
-            <select name="metric">
-                <option value='confidence'>confidence</option>
-                <option value='lift'>lift</option>
-                <option value='leverage'>leverage</option>
-            </select>  
-            <input type="submit" value="Submit" onclick="showDiv()">
+        {{ selection() }}
     </div>
-    <div class="loading" style="display: none;">     
-        </form>
-        <p>Loading...</p>
-        <div class="loadingImg">
-            <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
-        </div>
+    {{ loading() }}
+    <div class="table">
+        <button id="btn_table">
+            View Table
+        </button>
+    </div>
+    <div class="graph">
+        <button id="btn_graph">
+            View Graph
+        </button>
+    </div>
+    <div class="heatmap">
+        <button id="btn_heatmap">
+            View Heatmap
+        </button>
     </div> 
 </body>
