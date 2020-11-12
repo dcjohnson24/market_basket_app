@@ -1,22 +1,19 @@
-/* img {
-    width: 60%;
+.loadingGif img {
     display: block;
     margin: 0 auto;
-} */
-.loadingGif {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-}
-
-.loadingGif img {
-    width: 100%;
 }
 
 .loading, .table, .graph, .heatmap {
     display: none;
+    text-align: center;
+    justify-content: center;
 }
+
+.content, .selection, h1 {
+    text-align: center;
+    justify-content: center;
+}
+
 
 button {
     margin: 10px;
