@@ -6,7 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+import plotly
 import plotly.graph_objects as go
+import json
 
 from addEdge import addEdge
 
@@ -34,13 +36,14 @@ def remove_frozensets(rules: pd.DataFrame) -> pd.DataFrame:
     return rules
 
 
-def plot_heatmap_plotly(rules: pd.DataFrame, plot_val: str) -> None:
+def plot_heatmap_plotly(rules: pd.DataFrame, plot_val: str, show: bool = True) -> None:
     """ Plot an interactive heatmap
 
     Args:
         rules (pd.DataFrame): association rules from mlxtend
         plot_val (str): The metric to use for the heatmap such as
             confidence, lift, or leverage
+        show (bool): Whether to show the plot. If False, return a JSONObject
     """
     rules = remove_frozensets(rules)
 
@@ -56,7 +59,10 @@ def plot_heatmap_plotly(rules: pd.DataFrame, plot_val: str) -> None:
         xaxis_title='Antecedents',
         yaxis_title='Consequents'
     )
-    fig.show()
+    if show:
+        fig.show()
+    else:
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 
 def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
@@ -83,14 +89,15 @@ def plot_heatmap_seaborn(rules: pd.DataFrame, plot_val: str) -> None:
     plt.show()
 
 
-def plot_network_graph_plotly(rules: pd.DataFrame, weight_var: str) -> None:
+def plot_network_graph_plotly(rules: pd.DataFrame, weight_var: str, show: bool = True) -> None:
     """ Create a network of items and rules where edges contain
     various scores such as confidence, lift, etc.
 
     Args:
         rules (pd.DataFrame): DataFrame of association rules from mlxtend
-        weight_var (str): the association metric to use. Must be one of 
+        weight_var (str): the association metric to use. Must be one of
             'confidence', 'lift', 'leverage', or 'conviction'.
+        show (bool): whether to show the plot. If False, return a JSONObject.
     """
     rules = remove_frozensets(rules)
     rules[f'{weight_var}'] = rules[f'{weight_var}'].round(2)
@@ -180,4 +187,7 @@ def plot_network_graph_plotly(rules: pd.DataFrame, weight_var: str) -> None:
              f' nodes to get {weight_var} score<br>'
              f' Arrow represents rule A &#8594; C'
     )
-    fig.show()
+    if show:
+        fig.show()
+    else:
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

@@ -30,7 +30,6 @@ window.addEventListener('load', () => {
                 event.preventDefault(); // Prevent form from submitting.
             }); 
 
-
         document.getElementById('btn_table').addEventListener('click', () => {
             showDiv('loading');
             post(
@@ -38,6 +37,7 @@ window.addEventListener('load', () => {
                 {'metric': document.getElementById('metric').value}
             );
         });
+
         document.getElementById('btn_heatmap').addEventListener('click', () => {
             showDiv('loading');
             post(
@@ -45,6 +45,7 @@ window.addEventListener('load', () => {
                 {'metric' : document.getElementById('metric').value}
             );
         });
+        
         document.getElementById('btn_graph').addEventListener('click', () => {
             showDiv('loading');
             post(
@@ -64,8 +65,9 @@ window.addEventListener('load', () => {
             showDiv('loading');
             post(
                 view_demo,
-                {'metric': document.getElementById('metric').value}
-            );
+                {'metric': document.getElementById('metric').value,
+                 'viz_type': document.getElementById('visualize').value}
+            )    
         }); 
     };
 }); 

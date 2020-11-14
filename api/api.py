@@ -43,9 +43,7 @@ def upload_files():
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             abort(400)
-        app.logger.info('Loading into pandas dataframe')
         transactions_df = pd.read_excel(uploaded_file.stream)
-        app.logger.info('Loading into Sqllite')
         transactions_df.to_sql(
             'transactions',
             con=db.engine,
@@ -58,8 +56,6 @@ def upload_files():
                 'Quantity': db.Integer
             }
         )
-        app.logger.info('Done!')
-        app.logger.info(f'transactions_df.shape={transactions_df.shape}')
         return redirect(url_for('main.completed'))
     return render_template('demo.html')
 
@@ -77,14 +73,27 @@ def demo_selection():
 @main.route('/demo', methods=['POST'])
 def view_demo():
     metric = request.form.get('metric')
-    app.logger.info(f'metric {metric} has been passed to view_demo!')
+    viz_type = request.form.get('viz_type')
     rules = apriori.run_demo()
     rules_df = rules._asdict()[metric]
-    return render_template(
-        'tables.html',
-        metric=metric,
-        table=rules_df.to_html(index=False, classes='rules')
-    )
+    if viz_type == 'table':
+        return render_template(
+            'tables.html',
+            metric=metric,
+            table=rules_df.to_html(index=False, classes='rules')
+        )
+    elif viz_type == 'heatmap':
+        heatmap = plot_heatmap_plotly(rules_df, metric, show=False)
+        return render_template(
+            'plotly_output.html',
+            plot=heatmap
+        )
+    else:
+        network_graph = plot_network_graph_plotly(rules_df, metric, show=False)
+        return render_template(
+            'plotly_output.html',
+            plot=network_graph
+        )
 
 
 @main.route('/compute_rules', methods=['POST'])
@@ -99,16 +108,21 @@ def display_association_rules():
 @main.route('/heatmap', methods=['POST'])
 def plot_heatmap():
     rules_table, metric = generate_rules_from_json()
-    plot_heatmap_plotly(rules_table, metric)
-    return 'Ok'
+    heatmap = plot_heatmap_plotly(rules_table, metric, show=False)
+    return render_template(
+        'plotly_output.html',
+        plot=heatmap
+    )
 
 
 @main.route('/network_graph', methods=['POST'])
 def plot_network_graph():
     rules_table, metric = generate_rules_from_json()
-    app.logger.info('Starting the network graph plots')
-    plot_network_graph_plotly(rules_table, metric)
-    return 'Ok'
+    network_graph = plot_network_graph_plotly(rules_table, metric, show=False)
+    return render_template(
+        'plotly_output.html',
+        plot=network_graph
+    )
 
 
 @main.errorhandler(413)
