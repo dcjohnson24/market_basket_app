@@ -19,3 +19,13 @@
         </div>
     </div>
 {% endmacro %}
+{% macro chooseVisualization() %}
+    <div class="visualize">
+        <label for="visualize">Select visualization</label>
+        <select id="visualize">
+            <option value='table'>table</option>
+            <option value='heatmap'>heatmap</option>
+            <option value='network_graph'>network_graph</option>
+        </select>
+    </div>
+{% endmacro %}

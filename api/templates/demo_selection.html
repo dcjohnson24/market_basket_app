@@ -1,4 +1,4 @@
-{% from "macros.html" import selection, loading %}
+{% from "macros.html" import selection, loading, chooseVisualization %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +10,7 @@
     </head>
     <body>
         <h1>Demo selection</h1>
+        {{ chooseVisualization() }}
         {{ selection () }}
         {{ loading() }}
     </body>
