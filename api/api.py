@@ -39,10 +39,11 @@ def index():
 def upload_files():
     uploaded_file = request.files.get('file')
     filename = secure_filename(uploaded_file.filename)
+    app.logger.info(f'{filename} has reached here')
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
+            return ".csv, .xls, or .xlsx files only!", 400
         transactions_df = pd.read_excel(uploaded_file.stream)
         transactions_df.to_sql(
             'transactions',
@@ -56,9 +57,8 @@ def upload_files():
                 'Quantity': db.Integer
             }
         )
-        return redirect(url_for('main.completed'))
-    return render_template('demo.html')
-
+    return '', 204
+    
 
 @main.route('/completed')
 def completed():

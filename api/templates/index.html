@@ -6,15 +6,38 @@
       let view_demo = "{{ url_for('main.view_demo') }}";
     </script>
     <title>File Upload</title>
-    {{ dropzone.load_css() }}
-    {{ dropzone.style('border: 2px dashed #0087F7') }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
   </head>
   <body>
     <h1>File Upload</h1>
-    {{ dropzone.create('main.upload_files') }}
-    {{ dropzone.load_js() }}
-    {{ dropzone.config() }}
+    <form action="{{ url_for('main.upload_files') }}" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data"></form>
+    <button type="submit" id="upload-button">Submit</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      Dropzone.autoDiscover = false;
+      
+      $(function() {
+        var myDropzone = new Dropzone("#my-dropzone", {
+          addRemoveLinks: true,
+          maxFiles: 1,
+          timeout: 180000,
+          acceptedFiles: '.csv, .xlsx, .xls',
+          autoProcessQueue: false
+        });
+        var submitButton = document.querySelector('#upload-button');
+        submitButton.addEventListener('click', () => {
+          myDropzone.processQueue();
+        });
+
+        myDropzone.on('complete', (file, resp) => {
+          alert(resp);
+          window.location = "{{ url_for('main.completed') }}";
+          }
+        )
+      })
+      </script>
     <div class='content'>{% block content %}{% endblock %}</div>
   </body>
 </html>

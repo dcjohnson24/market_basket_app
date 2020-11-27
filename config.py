@@ -14,7 +14,6 @@ class Config:
     TEMPLATES_FOLDER = 'templates'
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024
     UPLOAD_EXTENSIONS = ['.csv', '.xls', '.xlsx']
-    DROPZONE_REDIRECT_VIEW = 'main.completed'
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get(
         'SQLALCHEMY_TRACK_MODIFICATIONS'
     )
