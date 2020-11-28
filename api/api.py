@@ -42,7 +42,7 @@ def upload_files():
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
+            return ".csv, .xls, or .xlsx files only!", 400
         transactions_df = pd.read_excel(uploaded_file.stream)
         transactions_df.to_sql(
             'transactions',
@@ -56,8 +56,7 @@ def upload_files():
                 'Quantity': db.Integer
             }
         )
-        return redirect(url_for('main.completed'))
-    return render_template('demo.html')
+    return '', 204  # This will be routed to completed route by Dropzone
 
 
 @main.route('/completed')
@@ -123,13 +122,3 @@ def plot_network_graph():
         'plotly_output.html',
         plot=network_graph
     )
-
-
-@main.errorhandler(413)
-def too_large(error):
-    return "File is too large", 413
-
-
-@main.errorhandler(400)
-def wrong_type(error):
-    return render_template('400.html'), 400
