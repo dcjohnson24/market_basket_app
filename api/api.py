@@ -57,8 +57,8 @@ def upload_files():
                 'Quantity': db.Integer
             }
         )
-    return '', 204
-    
+    return '', 204  # This will be routed to completed route by Dropzone
+
 
 @main.route('/completed')
 def completed():

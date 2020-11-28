@@ -24,6 +24,7 @@
           maxFiles: 1,
           timeout: 180000,
           acceptedFiles: '.csv, .xlsx, .xls',
+          dictInvalidFileType: "You can't upload files of this type. Must be .csv, .xls, or .xlsx",
           autoProcessQueue: false
         });
         var submitButton = document.querySelector('#upload-button');
@@ -31,9 +32,8 @@
           myDropzone.processQueue();
         });
 
-        myDropzone.on('complete', (file, resp) => {
-          alert(resp);
-          window.location = "{{ url_for('main.completed') }}";
+        myDropzone.on('success', (file, resp) => {
+            window.location = "{{ url_for('main.completed') }}";
           }
         )
       })
