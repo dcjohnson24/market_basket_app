@@ -39,7 +39,6 @@ def index():
 def upload_files():
     uploaded_file = request.files.get('file')
     filename = secure_filename(uploaded_file.filename)
-    app.logger.info(f'{filename} has reached here')
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
