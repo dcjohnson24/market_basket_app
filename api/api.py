@@ -123,13 +123,3 @@ def plot_network_graph():
         'plotly_output.html',
         plot=network_graph
     )
-
-
-@main.errorhandler(413)
-def too_large(error):
-    return "File is too large", 413
-
-
-@main.errorhandler(400)
-def wrong_type(error):
-    return render_template('400.html'), 400
