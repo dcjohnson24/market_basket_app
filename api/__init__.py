@@ -5,6 +5,7 @@ sys.path.append(path.join(pardir, 'model'))
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 
 from dotenv import load_dotenv
 
@@ -12,6 +13,7 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
 db = SQLAlchemy()
+bootstrap = Bootstrap()
 
 
 def create_app():
@@ -25,6 +27,7 @@ def create_app():
         app.config.from_object('config.ProdConfig')
 
     db.init_app(app)
+    bootstrap.init_app(app)
 
     from . import api
     app.register_blueprint(api.main)
