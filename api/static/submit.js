@@ -20,6 +20,7 @@ function post(path, params, method='post') {
     document.body.appendChild(form);
     form.submit();
 }
+
 window.addEventListener('load', () => {
     if (location.pathname.includes('completed')) {
 
@@ -31,7 +32,7 @@ window.addEventListener('load', () => {
             }); 
 
         document.getElementById('btn_table').addEventListener('click', () => {
-            showDiv('loading');
+            showDiv('spinner-grow');
             post(
                 display_association_rules, 
                 {'metric': document.getElementById('metric').value}
@@ -39,7 +40,7 @@ window.addEventListener('load', () => {
         });
 
         document.getElementById('btn_heatmap').addEventListener('click', () => {
-            showDiv('loading');
+            showDiv('spinner-grow');
             post(
                 plot_heatmap,
                 {'metric' : document.getElementById('metric').value}
@@ -47,7 +48,7 @@ window.addEventListener('load', () => {
         });
         
         document.getElementById('btn_graph').addEventListener('click', () => {
-            showDiv('loading');
+            showDiv('spinner-grow');
             post(
                 plot_network_graph,
                 {'metric': document.getElementById('metric').value}
@@ -62,7 +63,7 @@ window.addEventListener('load', () => {
         .getElementsByTagName('input')[0]
         .addEventListener('click', event => {
             event.preventDefault();
-            showDiv('loading');
+            showDiv('spinner-grow');
             post(
                 view_demo,
                 {'metric': document.getElementById('metric').value,

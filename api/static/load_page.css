@@ -32,12 +32,36 @@
     margin-top: 20px;
 }
 
-#select-submit {
-    position: absolute;
-    margin-top: 40px;
-    margin-left: -150px;
-}
 
 button {
     margin: 5px;
 }
+
+#metric #visualize {
+    width: auto;
+    margin: auto;
+    text-align: center;
+}
+
+label {
+    display: block;
+}
+
+#select-submit {
+    position: absolute;
+    transition: .5s ease;
+    top: 35%;
+    left: 47%;
+}
+
+.spinner-grow {
+    display: none;
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3rem;
+    height: 3rem;   
+}
+

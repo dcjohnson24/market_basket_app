@@ -2,27 +2,30 @@
     <div class="selection">
         <form>
             <label for="metric">Select metric of interest</label>
-            <select id="metric">
+            <select id="metric" class="form-control-sm">
                 <option value='confidence'>confidence</option>
                 <option value='lift'>lift</option>
                 <option value='leverage'>leverage</option>
             </select>
-            <input id="select-submit" type="submit" value="Submit"/>  
+            <input id="select-submit" class="btn btn-primary" type="submit" value="Submit"/>
         </form>
     </div>
 {% endmacro %}
 {% macro loading() %}
-    <div class="loading">     
+    <div class="spinner-grow" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <!-- <div class="loading">     
         <p>Loading...</p>
         <div class="loadingGif">
             <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
         </div>
-    </div>
+    </div> -->
 {% endmacro %}
 {% macro chooseVisualization() %}
     <div class="visualize">
         <label for="visualize">Select visualization</label>
-        <select id="visualize">
+        <select id="visualize" class="form-control-sm">
             <option value='table'>table</option>
             <option value='heatmap'>heatmap</option>
             <option value='network_graph'>network_graph</option>

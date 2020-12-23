@@ -1,25 +1,21 @@
-{% extends 'bootstrap/base.html' %}
 {% from 'macros.html' import selection, loading, chooseVisualization %}
-
-{% block html %}
-    <html>
-        {% block head %}
-            {{super()}}
-            <head>
-                <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
-                <script src="{{ url_for('static', filename='submit.js') }}"></script>
-                <script>
-                    let view_demo = "{{ url_for('main.view_demo') }}";
-                </script>
-            </head>
-        {% endblock %}
-        {% block content %}
-            <body>
-                <h1>Demo selection</h1>
-                {{ chooseVisualization() }}
-                {{ selection () }}
-                {{ loading() }}
-            </body>
-        {% endblock %}
-    </html>
-{% endblock %}
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+            crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
+        <script src="{{ url_for('static', filename='submit.js') }}"></script>
+        <script>
+            let view_demo = "{{ url_for('main.view_demo') }}";
+        </script>
+    </head>
+    {% block content %}
+        <body>
+            <h1>Demo selection</h1>
+            {{ chooseVisualization() }}
+            {{ selection () }}
+            {{ loading() }}
+        </body>
+    {% endblock %}
+</html>

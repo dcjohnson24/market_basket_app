@@ -1,61 +1,53 @@
-{% extends 'bootstrap/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="{{ url_for('static', filename='submit.js') }}"></script>
+    <script>
+      let demo_page = "{{ url_for('main.demo_selection') }}";
+      let view_demo = "{{ url_for('main.view_demo') }}";
+    </script> 
+    <title>File Upload</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+     crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
+  </head>
+    <body>
+      <h1>File Upload</h1>
+      <form action="{{ url_for('main.upload_files') }}" class="dropzone" id="my-dropzone"
+       method="POST" enctype="multipart/form-data"></form>
+      <button type="submit" class="btn btn-primary" id="upload-button">Submit</button>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script>
+        Dropzone.autoDiscover = false;
+        
+        $(function() {
+          var myDropzone = new Dropzone("#my-dropzone", {
+            addRemoveLinks: true,
+            maxFiles: 1,
+            timeout: 180000,
+            acceptedFiles: '.csv, .xlsx, .xls',
+            dictInvalidFileType: "You can't upload files of this type. Must be .csv, .xls, or .xlsx",
+            autoProcessQueue: false
+          });
+          var submitButton = document.querySelector('#upload-button');
+          submitButton.addEventListener('click', () => {
+            myDropzone.processQueue();
+          });
 
-{% block html %}
-  <html>
-    {% block head %}
-      <head>
-        <script src="{{ url_for('static', filename='submit.js') }}"></script>
-        <script>
-          let demo_page = "{{ url_for('main.demo_selection') }}";
-          let view_demo = "{{ url_for('main.view_demo') }}";
-        </script> 
-      {% block title %}
-        <title>File Upload</title>
+          myDropzone.on('success', (file, resp) => {
+              window.location = "{{ url_for('main.completed') }}";
+            }
+          )
+        })
+      </script>
+      {% block content %}
+        <div class='content'>{% block demostuff %}{% endblock %}</div>
       {% endblock %}
-      {% block styles %}
-        {{ super() }}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
-      {% endblock %}
-      </head>
-    {% endblock %}
-    {% block body %}
-      <body>
-        <h1>File Upload</h1>
-        <form action="{{ url_for('main.upload_files') }}" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data"></form>
-        <button type="submit" id="upload-button">Submit</button>
-        {% block scripts %}
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-          <script>
-            Dropzone.autoDiscover = false;
-            
-            $(function() {
-              var myDropzone = new Dropzone("#my-dropzone", {
-                addRemoveLinks: true,
-                maxFiles: 1,
-                timeout: 180000,
-                acceptedFiles: '.csv, .xlsx, .xls',
-                dictInvalidFileType: "You can't upload files of this type. Must be .csv, .xls, or .xlsx",
-                autoProcessQueue: false
-              });
-              var submitButton = document.querySelector('#upload-button');
-              submitButton.addEventListener('click', () => {
-                myDropzone.processQueue();
-              });
+    </body>
+</html>
 
-              myDropzone.on('success', (file, resp) => {
-                  window.location = "{{ url_for('main.completed') }}";
-                }
-              )
-            })
-            </script>
-            {{ super() }}
-        {% endblock %}
-        {% block content %}
-          <div class='content'>{% block demostuff %}{% endblock %}</div>
-        {% endblock %}
-      </body>
-    {% endblock %}
-  </html>
-{% endblock %}
