@@ -1,4 +1,4 @@
-{% macro selection() %}
+{% macro selection(location='completed') %}
     <div class="selection">
         <form>
             <label for="metric">Select metric of interest</label>
@@ -7,7 +7,11 @@
                 <option value='lift'>lift</option>
                 <option value='leverage'>leverage</option>
             </select>
-            <input id="select-submit" class="btn btn-primary" type="submit" value="Submit"/>
+            {% if location == 'completed' %}
+                <input class="btn btn-primary select-submit" type="submit" value="Submit"/>
+            {% else %}
+                <input class="btn btn-primary select-submit demo" type="submit" value="Submit"/>
+            {% endif %}
         </form>
     </div>
 {% endmacro %}
@@ -16,10 +20,14 @@
         <div class="spinner-grow index" role="status">
             <span class="sr-only">Loading...</span>
         </div>
+    {% elif location == 'completed' %}
+        <div class="spinner-grow completed" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     {% else %}
-    <div class="spinner-grow" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
+        <div class="spinner-grow" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     {% endif %}
 {% endmacro %}
 {% macro chooseVisualization() %}

@@ -46,11 +46,18 @@ label {
     display: block;
 }
 
-#select-submit {
+.select-submit {
+    position: absolute;
+    transition: .5s ease;
+    top: 20%;
+    left: 47%;
+}
+
+.select-submit.demo {
     position: absolute;
     transition: .5s ease;
     top: 35%;
-    left: 47%;
+    left: 47%
 }
 
 .spinner-grow {
@@ -58,10 +65,21 @@ label {
     text-align: center;
     justify-content: center;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 45%;
+    left: 48%;
     width: 3rem;
     height: 3rem;   
+}
+
+.spinner-grow.completed {
+    display: none;
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    top: 30%;
+    left: 48%;
+    width: 3rem;
+    height: 3rem;
 }
 
 .spinner-grow.index {
