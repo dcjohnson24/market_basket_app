@@ -11,16 +11,16 @@
         </form>
     </div>
 {% endmacro %}
-{% macro loading() %}
+{% macro loading(location='other') %}
+    {% if location == 'index' %}
+        <div class="spinner-grow index" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    {% else %}
     <div class="spinner-grow" role="status">
         <span class="sr-only">Loading...</span>
     </div>
-    <!-- <div class="loading">     
-        <p>Loading...</p>
-        <div class="loadingGif">
-            <img src="{{ url_for('static', filename='loading_image.gif') }}" alt="Loading..." /> 
-        </div>
-    </div> -->
+    {% endif %}
 {% endmacro %}
 {% macro chooseVisualization() %}
     <div class="visualize">

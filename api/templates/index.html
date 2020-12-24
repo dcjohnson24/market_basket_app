@@ -1,3 +1,4 @@
+{% from 'macros.html' import loading %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,6 +23,7 @@
       <button type="submit" class="btn btn-primary" id="upload-button">Submit</button>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      {{ loading('index') }}
       <script>
         Dropzone.autoDiscover = false;
         
@@ -37,6 +39,7 @@
           var submitButton = document.querySelector('#upload-button');
           submitButton.addEventListener('click', () => {
             myDropzone.processQueue();
+            showDiv('spinner-grow index');
           });
 
           myDropzone.on('success', (file, resp) => {

@@ -18,8 +18,7 @@
     display: grid;
     grid-auto-flow: row;
     grid-row-gap: 10px;
-    margin-top: 80px;
-
+    margin-top: 150px;
     ;
 }
 
@@ -65,3 +64,11 @@ label {
     height: 3rem;   
 }
 
+.spinner-grow.index {
+    display: none;
+    position: absolute;
+    top: 40%;
+    left: 0%;
+    width: 3rem;
+    height: 3rem;   
+}
