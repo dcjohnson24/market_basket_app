@@ -1,6 +1,9 @@
 {% from "macros.html" import selection, loading %}
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+     crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
     <script>
         let display_association_rules = "{{ url_for('main.display_association_rules') }}";
@@ -14,20 +17,20 @@
         <p>File upload successful!</p>
         {{ selection() }}
     </div>
-    {{ loading() }}
+    {{ loading('completed') }}
     <div class='btn_group'>
         <div class="table">
-            <button id="btn_table">
+            <button id="btn_table" class="btn btn-primary">
                 View Table
             </button>
         </div>
         <div class="graph">
-            <button id="btn_graph">
+            <button id="btn_graph" class="btn btn-primary">
                 View Graph
             </button>
         </div>
         <div class="heatmap">
-            <button id="btn_heatmap">
+            <button id="btn_heatmap" class="btn btn-primary">
                 View Heatmap
             </button>
         </div>
