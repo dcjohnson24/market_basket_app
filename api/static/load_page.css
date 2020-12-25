@@ -85,7 +85,7 @@ label {
 .spinner-grow.index {
     display: none;
     position: absolute;
-    top: 40%;
+    top: 60%;
     left: 0%;
     width: 3rem;
     height: 3rem;   
