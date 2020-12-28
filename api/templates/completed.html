@@ -1,4 +1,4 @@
-{% from "macros.html" import selection, loading %}
+{% from "macros.html" import selection, loading, moreInfo %}
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -17,6 +17,7 @@
         <p>File upload successful!</p>
         {{ selection() }}
     </div>
+    {{ moreInfo('completed') }}
     {{ loading('completed') }}
     <div class='btn_group'>
         <div class="table">
