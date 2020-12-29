@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='table_style.css') }}">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='table_style.css') }}">
     </head>
     {% block content %}
         <div class=page>

@@ -79,7 +79,10 @@ def view_demo():
         return render_template(
             'tables.html',
             metric=metric,
-            table=rules_df.to_html(index=False, classes='rules')
+            table=rules_df.to_html(
+                index=False,
+                justify='center',
+                classes=['table table-bordered table-striped table-hover table-sm'])
         )
     elif viz_type == 'heatmap':
         heatmap = plot_heatmap_plotly(rules_df, metric, show=False)
@@ -101,7 +104,10 @@ def display_association_rules():
     return render_template(
         'tables.html',
         metric=metric,
-        table=rules_table.to_html(index=False, classes='rules'))
+        table=rules_table.to_html(
+            index=False,
+            justify='center',
+            classes=['table table-bordered table-striped table-hover table-sm']))
 
 
 @main.route('/heatmap', methods=['POST'])

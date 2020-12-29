@@ -31,7 +31,6 @@
     margin-top: 20px;
 }
 
-
 button {
     margin: 5px;
 }
@@ -49,16 +48,30 @@ label {
 .select-submit {
     position: absolute;
     transition: .5s ease;
-    top: 20%;
+    top: 35%;
     left: 47%;
 }
 
-.select-submit.demo {
+.select-submit-demo {
+    position: absolute;
+    transition: .5s ease;
+    top: 45%;
+    left: 47%
+}
+
+.moreInfo {
     position: absolute;
     transition: .5s ease;
     top: 35%;
-    left: 47%
+    left: 65%
 }
+
+.moreInfoDemo {
+    top: 45%;
+    left: 65%
+}
+
+
 
 .spinner-grow {
     display: none;
@@ -85,7 +98,7 @@ label {
 .spinner-grow.index {
     display: none;
     position: absolute;
-    top: 40%;
+    top: 60%;
     left: 0%;
     width: 3rem;
     height: 3rem;   

@@ -3,14 +3,30 @@
         <form>
             <label for="metric">Select metric of interest</label>
             <select id="metric" class="form-control-sm">
-                <option value='confidence'>confidence</option>
-                <option value='lift'>lift</option>
-                <option value='leverage'>leverage</option>
+                <option value='confidence' data-bs-toggle="tooltip" data-bs-placement="right" data-html="true"
+                 title="Confidence measures the probability of buying B conditional on buying A.
+                 Ranges from 0 to 1">confidence</option>
+                <option value='lift' data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="Lift is the ratio of the observed number of transactions where A and B were 
+                bought together to the expected number of transactions where A and B were bought independently. 
+                
+                A value greater than 1 indicates a greater co-occurence of A and B. A value of 1 means independence. 
+                A value less than 1 means that buying one item decreases the chance of buying another. 
+                
+                Ranges from 0 to Infinity">lift</option>
+                <option value='leverage' data-bs-toggle="tooltip" data-bs-placement="right"
+                title="Leverage is the difference between the observed number of transactions where A and B are bought
+                together and the expected number of transactions where A and B are bought independently.
+                
+                A larger number indicates a greater co-occurence of A and B purchased together than purchased separately.
+                A value of 0 means independence.
+                
+                Ranges from -1 to 1">leverage</option>
             </select>
             {% if location == 'completed' %}
                 <input class="btn btn-primary select-submit" type="submit" value="Submit"/>
             {% else %}
-                <input class="btn btn-primary select-submit demo" type="submit" value="Submit"/>
+                <input class="btn btn-primary select-submit select-submit-demo" type="submit" value="Submit"/>
             {% endif %}
         </form>
     </div>
@@ -39,4 +55,17 @@
             <option value='network_graph'>network_graph</option>
         </select>
     </div>
+{% endmacro %}
+{% macro moreInfo(location='demo') %}
+    {% if location == 'demo' %}
+        <a class="btn btn-info moreInfo moreInfoDemo" role="button" 
+            href="https://en.wikipedia.org/wiki/Association_rule_learning" target="_blank" rel="noopener noreferrer">
+            More information on metrics
+        </a>
+    {% else %}
+        <a class="btn btn-info moreInfo" role="button" 
+            href="https://en.wikipedia.org/wiki/Association_rule_learning" target="_blank" rel="noopener noreferrer">
+            More information on metrics
+        </a>
+    {% endif %}
 {% endmacro %}
