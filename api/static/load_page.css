@@ -48,26 +48,26 @@ label {
 .select-submit {
     position: absolute;
     transition: .5s ease;
-    top: 20%;
+    top: 35%;
     left: 47%;
 }
 
 .select-submit-demo {
     position: absolute;
     transition: .5s ease;
-    top: 35%;
+    top: 45%;
     left: 47%
 }
 
 .moreInfo {
     position: absolute;
     transition: .5s ease;
-    top: 20%;
+    top: 35%;
     left: 65%
 }
 
 .moreInfoDemo {
-    top: 35%;
+    top: 45%;
     left: 65%
 }
 
