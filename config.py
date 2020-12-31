@@ -9,7 +9,6 @@ class Config:
     """Base config."""
     SEND_FILE_MAX_AGE_DEFAULT = 0
     SECRET_KEY = environ.get('SECRET_KEY')
-    SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024

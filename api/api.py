@@ -34,7 +34,6 @@ def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
 
 
 def before_request():
-    app.logger.info('This was run first')
     with db.engine.connect() as conn:
         conn.execute('DROP TABLE IF EXISTS transactions')
     db.session.commit()
