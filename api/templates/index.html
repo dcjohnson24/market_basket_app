@@ -8,7 +8,8 @@
     <script>
       let demo_page = "{{ url_for('main.demo_selection') }}";
       let view_demo = "{{ url_for('main.view_demo') }}";
-    </script> 
+    </script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"> 
     <title>File Upload</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
@@ -36,8 +37,11 @@
           });
           var submitButton = document.querySelector('#upload-button');
           submitButton.addEventListener('click', () => {
-            myDropzone.processQueue();
-            showDiv('spinner-grow index');
+            if (myDropzone.files.length == 0) alert("You have not uploaded any file")
+            else {
+              myDropzone.processQueue();
+              showDiv('spinner-grow index');
+            }
           });
 
           myDropzone.on('success', (file, resp) => {

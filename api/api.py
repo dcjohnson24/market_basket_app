@@ -24,10 +24,35 @@ main = Blueprint('main', __name__)
 
 
 def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
-    df = pd.read_sql_table('transactions', con=db.engine)
+    try:
+        df = pd.read_sql_table('transactions', con=db.engine)
+    except ValueError:
+        abort(500)
     metric = request.form.get('metric')
     rules = apriori.rules_from_user_upload(df)
     return rules._asdict()[metric], metric
+
+
+def before_request():
+    with db.engine.connect() as conn:
+        conn.execute('DROP TABLE IF EXISTS transactions')
+    db.session.commit()
+
+
+main.before_app_first_request(before_request)
+
+
+@main.after_request
+def after_request(response):
+    with app.app_context():
+        if app.config['DEBUG']:
+            response.headers["Cache-Control"] = (
+                "no-cache, no-store, "
+                "must-revalidate, public, max-age=0"
+            )
+            response.headers["Expires"] = 0
+            response.headers["Pragma"] = "no-cache"
+            return response
 
 
 @main.route('/')
@@ -128,3 +153,8 @@ def plot_network_graph():
         'plotly_output.html',
         plot=network_graph
     )
+
+
+@main.errorhandler(500)
+def no_data_uploaded(error):
+    return render_template('500.html'), 500
