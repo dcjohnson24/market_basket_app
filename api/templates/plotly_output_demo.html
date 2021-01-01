@@ -3,16 +3,16 @@
 <head lang="en">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"> 
     <title>{{ display_type }}</title>
 </head>
 <body>
     <ul class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ url_for('main.completed') }}">Upload Successful</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.demo_selection') }}">Demo</a></li>
         <li class="breadcrumb-item active">View Results</li>
     </ul>
     <div class="container">
