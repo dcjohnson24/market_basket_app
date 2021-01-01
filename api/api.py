@@ -102,7 +102,7 @@ def view_demo():
     rules_df = rules._asdict()[metric]
     if viz_type == 'table':
         return render_template(
-            'tables.html',
+            'tables_demo.html',
             metric=metric,
             table=rules_df.to_html(
                 index=False,
@@ -112,13 +112,13 @@ def view_demo():
     elif viz_type == 'heatmap':
         heatmap = plot_heatmap_plotly(rules_df, metric, show=False)
         return render_template(
-            'plotly_output.html',
+            'plotly_output_demo.html',
             plot=heatmap
         )
     else:
         network_graph = plot_network_graph_plotly(rules_df, metric, show=False)
         return render_template(
-            'plotly_output.html',
+            'plotly_output_demo.html',
             plot=network_graph
         )
 
