@@ -8,6 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 from dotenv import load_dotenv
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+
+sentry_sdk.init(
+    dsn="https://435a5d9c92bc4b64ae9c8541c3949fe9@o502892.ingest.sentry.io/5586353",
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0
+)
+
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
