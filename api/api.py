@@ -156,5 +156,5 @@ def plot_network_graph():
 
 
 @main.errorhandler(500)
-def no_data_uploaded(error):
-    return render_template('500.html'), 500
+def internal_error(error):
+    return render_template('500.html', error=error), 500
