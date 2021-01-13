@@ -38,7 +38,10 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     for target in targets:
         in_cols = df.columns.str.contains(target, case=False).sum()
         if not in_cols:
-            raise ValueError(f'DataFrame is missing a {target} column.')
+            raise ValueError(
+                f"Data is missing column '{target.title()}'."
+                f"\nA .csv or excel file must be uploaded with"
+                f" the columns 'Invoice', 'Description', and 'Quantity'.")
     df = df.dropna(axis=0, subset=['InvoiceNo'])
     df['InvoiceNo'] = df['InvoiceNo'].astype(str)
     df = df[~df['InvoiceNo'].str.contains('C')]
