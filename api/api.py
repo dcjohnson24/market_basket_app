@@ -26,10 +26,11 @@ main = Blueprint('main', __name__)
 def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
     try:
         df = pd.read_sql_table('transactions', con=db.engine)
-    except ValueError:
-        abort(500)
-    metric = request.form.get('metric')
-    rules = apriori.rules_from_user_upload(df)
+        metric = request.form.get('metric')
+        rules = apriori.rules_from_user_upload(df)
+    except ValueError as ve:
+        abort(500, str(ve))
+
     return rules._asdict()[metric], metric
 
 
