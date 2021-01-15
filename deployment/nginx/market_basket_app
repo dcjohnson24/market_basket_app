@@ -1,20 +1,40 @@
 server {
+    server_name www.dealsinmyshop.ml;
+    return 301 $scheme://$host$request_uri;
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.dealsinmyshop.ml/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.dealsinmyshop.ml/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = dealsinmyshop.ml) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
     # listen on port 80 (http)
     listen 80;
-    server_name _;
+    server_name dealsinmyshop.ml;
     location / {
         # redirect any requests to the same URL but on https
         return 301 https://$host$request_uri;
     }
+
+
 }
 server {
     # listen on port 443 (https)
     listen 443 ssl;
-    server_name _;
+    server_name dealsinmyshop.ml;
 
     # location of the self-signed SSL certificate
-    ssl_certificate /home/ubuntu/market_basket_app/certs/cert.pem;
-    ssl_certificate_key /home/ubuntu/market_basket_app/certs/key.pem;
+    ssl_certificate /etc/letsencrypt/live/www.dealsinmyshop.ml/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.dealsinmyshop.ml/privkey.pem; # managed by Certbot
 
     # write access and error logs to /var/log
     access_log /var/log/market_basket_app_access.log;
@@ -34,4 +54,18 @@ server {
         alias /home/ubuntu/market_basket_app/api/static;
         expires 30d;
     }
+
 }
+server {
+    if ($host = www.dealsinmyshop.ml) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name www.dealsinmyshop.ml;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}
+
