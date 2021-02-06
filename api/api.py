@@ -18,7 +18,7 @@ import pandas as pd
 import model.apriori as apriori
 from model.visualize import plot_heatmap_plotly, plot_network_graph_plotly
 
-from . import db
+from . import db, tasks
 
 main = Blueprint('main', __name__)
 
@@ -27,11 +27,13 @@ def generate_rules_from_json() -> Tuple[pd.DataFrame, str]:
     try:
         df = pd.read_sql_table('transactions', con=db.engine)
         metric = request.form.get('metric')
-        rules = apriori.rules_from_user_upload(df)
+        rules = tasks._rules_from_user_upload.delay(df.to_json(), metric)
+        res = rules.wait()
+        rules_df = pd.read_json(res)
     except ValueError as ve:
         abort(500, str(ve))
 
-    return rules._asdict()[metric], metric
+    return rules_df, metric
 
 
 def before_request():

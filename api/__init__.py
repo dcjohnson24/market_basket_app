@@ -7,11 +7,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from dotenv import load_dotenv
+from celery import Celery
+
+from config import Config
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
 db = SQLAlchemy()
+celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 
 def create_app():
@@ -25,6 +29,7 @@ def create_app():
         app.config.from_object('config.ProdConfig')
 
     db.init_app(app)
+    celery.conf.update(app.config)
 
     from . import api
     app.register_blueprint(api.main)
