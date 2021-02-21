@@ -15,3 +15,4 @@ python-dotenv==0.14.0
 gunicorn==20.0.4
 PyMySQL==0.10.1
 sentry-sdk[flask]
+celery==5.0.5
