@@ -13,6 +13,8 @@ server {
 }
 
 server {
+    client_max_body_size 50M;
+
     if ($host = dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
@@ -29,6 +31,8 @@ server {
 
 }
 server {
+    client_max_body_size 50M;
+
     # listen on port 443 (https)
     listen 443 ssl;
     server_name dealsinmyshop.ml;
@@ -58,6 +62,8 @@ server {
 
 }
 server {
+    client_max_body_size 50M;
+
     if ($host = www.dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
