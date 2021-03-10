@@ -3,7 +3,7 @@ server {
     return 301 $scheme://$host$request_uri;
 
 
-    client_max_body_size 50M;
+    
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/www.dealsinmyshop.ml/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/www.dealsinmyshop.ml/privkey.pem; # managed by Certbot
@@ -13,7 +13,7 @@ server {
 }
 
 server {
-    client_max_body_size 50M;
+    
 
     if ($host = dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
@@ -31,7 +31,7 @@ server {
 
 }
 server {
-    client_max_body_size 50M;
+    
 
     # listen on port 443 (https)
     listen 443 ssl;
@@ -62,7 +62,7 @@ server {
 
 }
 server {
-    client_max_body_size 50M;
+    
 
     if ($host = www.dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
