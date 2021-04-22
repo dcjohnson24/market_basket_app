@@ -16,8 +16,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get(
         'SQLALCHEMY_TRACK_MODIFICATIONS'
     )
-    CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 
 
 class ProdConfig(Config):
