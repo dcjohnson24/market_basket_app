@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<head> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='load_page.css') }}">
+</head>
+<body>
+    <h5>Upload a .csv, .xlsx, or .xls file with the columns 'InvoiceNo', 
+        'Description', and 'Quantity'</h5>
+    <div class="example_img">
+        <img src="{{ url_for('static', filename='OnlineRetailFlask.PNG') }}">    
+    </div>
+</body>

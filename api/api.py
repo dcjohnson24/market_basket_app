@@ -88,6 +88,11 @@ def upload_files():
     return '', 204  # This will be routed to completed route by Dropzone
 
 
+@main.route('/data_example')
+def show_example():
+    return render_template('data_example.html')
+
+
 @main.route('/completed')
 def completed():
     return render_template('completed.html')
