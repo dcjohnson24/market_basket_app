@@ -107,3 +107,14 @@ label {
     width: 3rem;
     height: 3rem;   
 }
+
+.example_img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.example_link {
+    text-align: right;
+}

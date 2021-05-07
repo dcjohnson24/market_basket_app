@@ -3,6 +3,7 @@ server {
     return 301 $scheme://$host$request_uri;
 
 
+    
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/www.dealsinmyshop.ml/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/www.dealsinmyshop.ml/privkey.pem; # managed by Certbot
@@ -12,6 +13,8 @@ server {
 }
 
 server {
+    
+
     if ($host = dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
@@ -28,6 +31,8 @@ server {
 
 }
 server {
+    
+
     # listen on port 443 (https)
     listen 443 ssl;
     server_name dealsinmyshop.ml;
@@ -42,7 +47,7 @@ server {
 
     location / {
         # forward application requests to the gunicorn server
-        proxy_pass http://localhost:8000;
+        proxy_pass http://127.0.0.1:8000;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -57,6 +62,8 @@ server {
 
 }
 server {
+    
+
     if ($host = www.dealsinmyshop.ml) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
