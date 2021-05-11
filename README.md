@@ -11,3 +11,11 @@ Note that on a production server, please set `client_max_body_size 50M;` on your
 The `sqlite` database is stored in `/tmp` for now. Until a better place is found, the permissions for the db files here must be changed with `chmod 666 /tmp/prod.db`.
 
 The `redis.conf` should be edited as follows: `daemonize yes` and `supervised no`. The `redis` server will start once the server is running.
+
+Install `letsencrypt` and `certbot` on your machine. To keep the certificates automatically renewed, set up a cron job like so:
+
+```bash
+crontab -e
+```
+
+When the editor opens, add the line `0 0 1 */2 * /usr/bin/letsencrypt renew >> /var/log/letsencrypt-renew.log`, which will renew the certificates every two months at 00:00 on the first day of the month.
