@@ -12,8 +12,8 @@ echo "Installing packages $LIST_OF_APPS"
 sudo apt-get update -y && sudo apt-get install -y $LIST_OF_APPS
 
 echo "Copying nginx and supervisor configs"
-sudo cp /deployment/nginx/market_basket_app /etc/nginx/sites-available/
-sudo cp /deployment/supervisor/configs/conf.d/* /etc/supervisor/conf.d/
+sudo cp deployment/nginx/market_basket_app /etc/nginx/sites-available/
+sudo cp deployment/supervisor/configs/conf.d/* /etc/supervisor/conf.d/
 
 echo "Creating log folders for supervisor"
 sudo mkdir -p /var/log/supervisor
