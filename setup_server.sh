@@ -15,7 +15,10 @@ echo "Copying nginx and supervisor configs"
 sudo cp deployment/nginx/market_basket_app /etc/nginx/sites-available/
 sudo cp deployment/supervisor/configs/conf.d/* /etc/supervisor/conf.d/
 
-echo "Creating log folders for supervisor"
+echo "Creating log folder for supervisor"
 sudo mkdir -p /var/log/supervisor
 sudo chmod 777 /var/log/supervisor
 
+echo "Creating log folder for celery"
+sudo mkdir -p /var/log/celery
+sudo chmod 777 /var/log/celery
