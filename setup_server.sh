@@ -7,7 +7,7 @@
 # copy supervisor config of repo to /etc/supervisor/conf.d/
 # make a directory for the celery logs /var/log/supervisor/
 # change permissions on /var/log/supervisor directory to 777
-LIST_OF_APPS = "virtualenv supervisor nginx redis-server"
+LIST_OF_APPS="virtualenv supervisor nginx redis-server"
 echo "Installing packages $LIST_OF_APPS"
 sudo apt-get update -y && sudo apt-get install -y $LIST_OF_APPS
 
