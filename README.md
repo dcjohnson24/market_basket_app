@@ -12,6 +12,14 @@ The `sqlite` database is stored in `/tmp` for now. Until a better place is found
 
 The `redis.conf` should be edited as follows: `daemonize yes` and `supervised no`. The `redis` server will start once the server is running.
 
+Remember to create a `.env` file with the following attributes e.g.
+```
+DEV_DATABASE_URI=sqlite:///dev.db
+PROD_DATABASE_URI=sqlite:///prod.db
+FLASK_ENV=production
+SQLALCHEMY_TRACK_MODIFICATIONS=False
+```
+
 Install `letsencrypt` and `certbot` on your machine. To keep the certificates automatically renewed, set up a cron job like so:
 
 ```bash
