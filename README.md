@@ -6,7 +6,7 @@ The user will upload data in `.csv`, `.xls`, or `.xlsx` format. The data is expe
 
 ## Random production stuff
 
-Note that on a production server, please set `client_max_body_size 50M;` on your`nginx.conf`. Other things that may be worth tweaking are `proxy_read_timeout` and `proxy_connect_timeout`.
+Note that on a production server, please set `client_max_body_size 50M;` on your `nginx.conf`. Other things that may be worth tweaking are `proxy_read_timeout` and `proxy_connect_timeout`.
 
 The `sqlite` database is stored in `/tmp` for now. Until a better place is found, the permissions for the db files here must be changed with `chmod 666 /tmp/prod.db`.
 
