@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: "."
+    command: flask run -p 5000
+    ports: 
+      - 5000:5000
+    env_file:
+      - ".env"
+    depends_on: 
+      - "redis"
+
+  worker:
+    build:
+      context: "."
+      args:
+        - "FLASK_ENV=${FLASK_ENV:-production}"
+    command: celery -A celery_worker.celery worker --loglevel=INFO
+    depends_on:
+    - "redis"
+    env_file:
+      - ".env"
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-.:/usr/src/app/}"
+  
+  redis:
+    env_file:
+      - ".env"
+    image: "redis:6.2.5"
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
+    ports:
+      - 6379:6379
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-.:/usr/src/app/}"
+
+volumes:
+  redis:
