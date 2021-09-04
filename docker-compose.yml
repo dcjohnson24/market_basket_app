@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: "."
-    command: flask run -p 5000
+    command: flask run -h 0.0.0.0
     ports: 
       - 5000:5000
     env_file:
