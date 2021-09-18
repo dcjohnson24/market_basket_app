@@ -1,8 +1,13 @@
 from os import environ, path
 from dotenv import load_dotenv
 
+FLASK_ENV = environ.get('FLASK_ENV', 'development')
+
 basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, '.env'))
+if FLASK_ENV == 'development':
+    load_dotenv(path.join(basedir, '.env.dev'))
+elif FLASK_ENV == 'production':
+    load_dotenv(path.join(basedir, '.env.prod'))
 
 
 class Config:
@@ -16,8 +21,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get(
         'SQLALCHEMY_TRACK_MODIFICATIONS'
     )
-    CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
-    CELERY_RESULT_BACKEND = environ.get('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
+    CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 
 
 class ProdConfig(Config):

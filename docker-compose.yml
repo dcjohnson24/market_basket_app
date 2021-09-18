@@ -4,11 +4,15 @@ services:
   web:
     build:
       context: "."
+      args:
+        - "FLASK_ENV=${FLASK_ENV:-development}"
     command: flask run -h 0.0.0.0
     ports: 
       - 5000:5000
     env_file:
-      - ".env"
+      - ".env.dev"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
     depends_on: 
       - "redis"
 
@@ -16,27 +20,39 @@ services:
     build:
       context: "."
       args:
-        - "FLASK_ENV=${FLASK_ENV:-production}"
+        - "FLASK_ENV=${FLASK_ENV:-development}"
     command: celery -A celery_worker.celery worker --loglevel=INFO
-    depends_on:
-    - "redis"
     env_file:
-      - ".env"
+      - ".env.dev"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
     volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/usr/src/app/}"
+      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
+    depends_on:
+    - "web"
+    - "redis"
   
+  db:
+    env_file: 
+      - ".env.dev"
+    image: postgres:13.4
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports: 
+      - 5432:5432
+
   redis:
     env_file:
-      - ".env"
+      - ".env.dev"
     image: "redis:6.2.5"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
     ports:
       - 6379:6379
     volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/usr/src/app/}"
+      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
 
 volumes:
   redis:
+  postgres_data:

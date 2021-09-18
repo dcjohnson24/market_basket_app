@@ -11,19 +11,26 @@ from celery import Celery
 
 from config import Config
 
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
-
-
-sentry_sdk.init(
-    dsn="https://435a5d9c92bc4b64ae9c8541c3949fe9@o502892.ingest.sentry.io/5586353",
-    integrations=[FlaskIntegration(), RedisIntegration()],
-    traces_sample_rate=1.0
-)
+FLASK_ENV = environ.get('FLASK_ENV', 'development')
 
 basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, '.env'))
+if FLASK_ENV == 'development':
+    load_dotenv(path.join(basedir, '.env.dev'))
+elif FLASK_ENV == 'production':
+    load_dotenv(path.join(basedir, '.env.prod'))
+
+
+if FLASK_ENV == 'production':
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
+
+    sentry_sdk.init(
+        dsn="https://435a5d9c92bc4b64ae9c8541c3949fe9@o502892.ingest.sentry.io/5586353",
+        integrations=[FlaskIntegration(), RedisIntegration()],
+        traces_sample_rate=1.0
+    )
+
 
 db = SQLAlchemy()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
@@ -31,10 +38,9 @@ celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 def create_app():
     app = Flask(__name__)
-    flask_env = environ.get('FLASK_ENV')
-    if flask_env == 'development':
+    if FLASK_ENV == 'development':
         app.config.from_object('config.DevConfig')
-    elif flask_env == 'production':
+    elif FLASK_ENV == 'production':
         app.config.from_object('config.ProdConfig')
     else:
         app.config.from_object('config.ProdConfig')

@@ -4,11 +4,13 @@ services:
   web:
     build:
       context: "."
+      args: 
+        - "FLASK_ENV=${FLASK_ENV:-production}"
     command: gunicorn -b 0.0.0.0:8000 -t 120 -w 4 wsgi:app
     ports: 
       - 8000:8000
     env_file:
-      - ".env"
+      - ".env.prod"
     depends_on: 
       - "redis"
 
