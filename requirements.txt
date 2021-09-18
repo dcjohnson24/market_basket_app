@@ -1,4 +1,4 @@
-mlxtend==0.17.3
+mlxtend==0.19.0
 pandas==1.1.2
 numpy==1.19.2
 ipython==7.27.0
@@ -20,3 +20,4 @@ celery==5.0.5
 redis==3.5.3
 supervisor==4.2.1
 gevent==21.1.2
+psycopg2==2.9.1
