@@ -1,11 +1,19 @@
+import os
 from collections import namedtuple
 
 import pandas as pd
 
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 Rules = namedtuple('Rules', ['confidence', 'lift', 'leverage'])
+
+FLASK_ENV = os.environ.get('FLASK_ENV', 'development')
+
+if FLASK_ENV == 'development':
+    MIN_SUPPORT = 0.3
+else:
+    MIN_SUPPORT = 0.03
 
 
 def read_input_data(file_name: str) -> pd.DataFrame:
@@ -107,7 +115,7 @@ def make_rules(
         Rules: Assocation rules DataFrames for confidence,
             lift, and leverage metrics.
     """
-    itemsets = apriori(
+    itemsets = fpgrowth(
         one_hot_df,
         min_support=min_support,
         use_colnames=True
@@ -141,7 +149,7 @@ def make_rules(
 def rules_from_user_upload(df):
     df = prepare_data(df)
     one_hot_df = count_items_per_transaction(df)
-    return make_rules(one_hot_df)
+    return make_rules(one_hot_df, min_support=MIN_SUPPORT)
 
 
 def run_demo() -> Rules:
