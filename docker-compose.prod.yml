@@ -2,17 +2,47 @@ version: "3.8"
 
 services:
   web:
-    build:
-      context: "."
-      args: 
-        - "FLASK_ENV=${FLASK_ENV:-production}"
     command: gunicorn -b 0.0.0.0:8000 -t 120 -w 4 wsgi:app
-    ports: 
-      - 8000:8000
+    expose: 
+      - 8000
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     env_file:
       - ".env.prod"
     depends_on: 
       - "redis"
+    volumes:
+      - ${DOCKER_WEB_VOLUME:-static-assets}:/home/myuser/api/static
+  
+  worker:
+    env_file: 
+      - ".env.prod"
+      
+  db:
+    env_file:
+      - ".env.prod"
+
+  redis:
+    env_file:
+      - ".env.prod"
+
+  proxy:
+    build:
+      context: "./deployment/nginx"
+      args:
+        - project_conf=${DOCKER_PROXY_CONF:-market_basket_app_docker_local_test.conf}
+    env_file:
+      - ".env.prod"
+    ports:
+      - 1337:80
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    command: nginx -g "daemon off;"
+    volumes: 
+      - ${DOCKER_WEB_VOLUME:-static-assets}:/app/static
+    depends_on: 
+      - "web"
+
+volumes:
+  static-assets:
 
 
   
