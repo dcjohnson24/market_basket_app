@@ -22,3 +22,16 @@ sudo chmod 777 /var/log/supervisor
 echo "Creating log folder for celery"
 sudo mkdir -p /var/log/celery
 sudo chmod 777 /var/log/celery
+
+echo "Installing docker"
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+apt-cache policy docker-ce
+sudo apt install docker-ce
+
+echo "Check that docker is running"
+sudo systemctl status docker
+
+echo "Run docker without sudo"
+sudo usermod -aG docker ${USER}
+su - ${USER}
