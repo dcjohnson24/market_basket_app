@@ -15,10 +15,13 @@ FLASK_ENV = environ.get('FLASK_ENV', 'development')
 
 basedir = path.abspath(path.dirname(__file__))
 if FLASK_ENV == 'development':
-    load_dotenv(path.join(basedir, '.env.dev'))
+    dotenv_file = 'env.dev'
 elif FLASK_ENV == 'production':
-    load_dotenv(path.join(basedir, '.env.prod'))
+    dotenv_file = '.env.prod'
+elif FLASK_ENV == 'staging':
+    dotenv_file = '.env.staging'
 
+load_dotenv(path.join(basedir, dotenv_file))
 
 if FLASK_ENV == 'production':
     import sentry_sdk

@@ -2,18 +2,21 @@ version: "3.8"
 
 services:
   web:
+    image: djohnson24/web
     command: gunicorn -b 0.0.0.0:8000 -t 120 -w 4 wsgi:app
-    expose: 
-      - 8000
+    ports:
+      - 8000:8000
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     env_file:
       - ".env.prod"
     depends_on: 
       - "redis"
+      - "db"
     volumes:
-      - ${DOCKER_WEB_VOLUME:-static-assets}:/home/myuser/api/static
+      - static_assets:/home/myuser/api/static
   
   worker:
+    image: djohnson24/worker
     env_file: 
       - ".env.prod"
       
@@ -27,22 +30,31 @@ services:
 
   proxy:
     build:
-      context: "./deployment/nginx"
+      context: './deployment/nginx'
       args:
-        - project_conf=${DOCKER_PROXY_CONF:-market_basket_app_docker_local_test.conf}
+        - project_conf=${DOCKER_PROXY_CONF:-market_basket_app_docker.conf}
+    image: djohnson24/proxy
     env_file:
       - ".env.prod"
     ports:
-      - 1337:80
+      - 80:80
+      - 443:443
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     command: nginx -g "daemon off;"
-    volumes: 
-      - ${DOCKER_WEB_VOLUME:-static-assets}:/app/static
+    volumes:
+      - static_assets:/app/static
+      - ./deployment/certbot/www/:/var/www/certbot:ro
+      - ./deployment/nginx/conf/market_basket_app_docker.conf:/etc/nginx/conf.d/market_basket_app_docker.conf:ro
     depends_on: 
       - "web"
-
+  
+  certbot:
+    image: certbot/certbot:v1.19.0
+    volumes:
+      - ./deployment/certbot/www/:/var/www/certbot:rw
+  
 volumes:
-  static-assets:
+  static_assets:
 
 
   

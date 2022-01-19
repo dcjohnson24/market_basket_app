@@ -1,3 +1,4 @@
+# Docker compose file compatible with AWS Fargate i.e. no volumes 
 version: "3.8"
 
 services:
@@ -11,8 +12,6 @@ services:
       - 5000:5000
     env_file:
       - ".env.dev"
-    volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
     depends_on: 
       - "redis"
 
@@ -25,9 +24,7 @@ services:
     env_file:
       - ".env.dev"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-    stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
-    volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
+    stop_grace_period: 3s
     depends_on:
     - "web"
     - "redis"
@@ -47,12 +44,12 @@ services:
       - ".env.dev"
     image: "redis:6.2.5"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-    stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
+    stop_grace_period: 3s
     ports:
       - 6379:6379
     volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/home/myuser}"
+      - redis_data:/data
 
 volumes:
-  redis:
+  redis_data:
   postgres_data:

@@ -4,11 +4,15 @@ from dotenv import load_dotenv
 FLASK_ENV = environ.get('FLASK_ENV', 'development')
 
 basedir = path.abspath(path.dirname(__file__))
-if FLASK_ENV == 'development':
-    load_dotenv(path.join(basedir, '.env.dev'))
-elif FLASK_ENV == 'production':
-    load_dotenv(path.join(basedir, '.env.prod'))
 
+if FLASK_ENV == 'development':
+    dotenv_file = 'env.dev'
+elif FLASK_ENV == 'production':
+    dotenv_file = '.env.prod'
+elif FLASK_ENV == 'staging':
+    dotenv_file = '.env.staging'
+
+load_dotenv(path.join(basedir, dotenv_file))
 
 class Config:
     """Base config."""
@@ -31,6 +35,11 @@ class ProdConfig(Config):
     TESTING = False
     SQLALCHEMY_DATABASE_URI = environ.get('PROD_DATABASE_URI')
 
+class StagingConfig(Config):
+    FLASK_ENV = 'staging'
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = environ.get('STAGING_DATABASE_URI')
 
 class DevConfig(Config):
     FLASK_ENV = 'development'
