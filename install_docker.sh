@@ -20,7 +20,7 @@ sudo apt-get update -y
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 echo "--> Run docker without sudo"
-sudo groupadd docker || true # continue upon error
+getent group docker || sudo groupadd docker # check whether 'docker' group exists and add if non-existent
 sudo usermod -aG docker $USER
 newgrp docker
 docker run hello-world
