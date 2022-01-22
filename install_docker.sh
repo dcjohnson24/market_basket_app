@@ -24,3 +24,13 @@ sudo groupadd docker || true # continue upon error
 sudo usermod -aG docker $USER
 newgrp docker
 docker run hello-world
+
+echo "--> Installing docker compose v2"
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 \
+  -o ~/.docker/cli-plugins/docker-compose
+chmod +x ~/.docker/cli-plugins/docker-compose
+
+echo "--> Install compose switch"
+curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh \
+ | sh
