@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "--> Installing docker"
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install \
     ca-certificates \
     curl \
@@ -16,14 +16,11 @@ echo \
    https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 
-echo "--> Check that docker is running"
-sudo systemctl status docker
-
 echo "--> Run docker without sudo"
-sudo groupadd docker
+sudo groupadd docker || true # continue upon error
 sudo usermod -aG docker $USER
 newgrp docker
 docker run hello-world
