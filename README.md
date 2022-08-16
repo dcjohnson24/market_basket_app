@@ -4,6 +4,9 @@ A simple Flask app that serves a `plotly` network graph, heatmap, or table of as
 
 The user will upload data in `.csv`, `.xls`, or `.xlsx` format. The data is expected to contain the columns `InvoiceNo`, `Description`, and `Quantity`. After uploading the data, the user will select the preferred metric for these plots such as 'confidence', 'lift', or 'leverage'.
 
+Run the app locally with `docker compose up -d`. The app should be accessible on port 5000. Docker and Docker compose installations instructions can be found [here](https://docs.docker.com/get-docker/) and [here](https://docs.docker.com/compose/install/). Note that you should install Compose version 2.
+
+
 ## Docker Fargate Deployment
 
 An ecs context must be created and used for deployments. Create an ecs context and switch to it with
