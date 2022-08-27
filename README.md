@@ -4,25 +4,35 @@ A simple Flask app that serves a `plotly` network graph, heatmap, or table of as
 
 The user will upload data in `.csv`, `.xls`, or `.xlsx` format. The data is expected to contain the columns `InvoiceNo`, `Description`, and `Quantity`. After uploading the data, the user will select the preferred metric for these plots such as 'confidence', 'lift', or 'leverage'.
 
-Run the app locally with `docker compose up -d`. The app should be accessible on port 5000. Docker and Docker compose installations instructions can be found [here](https://docs.docker.com/get-docker/) and [here](https://docs.docker.com/compose/install/). Note that you should install Compose version 2.
+Run the app locally with `docker compose up -d`. The app should be accessible on port 5000. Docker and Docker compose installations instructions can be found [here](https://docs.docker.com/get-docker/) and [here](https://docs.docker.com/compose/install/). Note that you should install Compose version 2. You can also run `./install_docker.sh`.
 
 
 ## Docker Fargate Deployment
 
 An ecs context must be created and used for deployments. Create an ecs context and switch to it with
 ```docker
+docker context create myecscontext
 docker context use myecscontext
 ```
 Note that your `DOCKER_HOST` environment variable must be unset e.g. `unset DOCKER_HOST` or `docker context use` will not work.
 
 You may get errors about ECS not supporting bind mounts from host. 
 
-Create a CloudFormation template with `docker compose -f docker-compose.yml -f docker-compose.prod.yml convert > CloudFormation.yml`. Replace `_` with `-`. 
+Launch the app with `docker compose -p my-app -f docker-compose.yml -f docker-compose.prod.yml up`. Note that if `-p` isn't specified, it will take the project name as the name of directory, which contains the illegal character `_`.  
+
+An alternative to running `docker compose` is to use CloudFormation.
+Create a CloudFormation template with `docker compose -f docker-compose.yml -f docker-compose.prod.yml convert > CloudFormation.yml`. Replace `_` with `-` everywhere in the template. 
+
+Switch back to the default context with `docker context use default` and run 
+```
+aws cloudformation create-stack --stack-name <name> --template-body CloudFormation.yml --capabilities CAPABILITY_IAM
+```
+to create the infrastructure for the app. Note again that `--stack-name` cannot contain `_`.
 
 ### Port mappings
-If you have port mappings such as `80:8080` or `443:8443` in your `docker-compose.yml` file, AWS will throw the error `published port can't be set to a distinct value than container port: incompatible attribute`. To work around this, use the solution posted [here](https://medium.com/tfogo/how-to-serve-your-website-on-port-80-or-443-using-aws-load-balancers-a3b84781d730)
+If you have port mappings such as `80:8080` or `443:8443` in your `docker-compose.yml` file, AWS will throw the error `published port can't be set to a distinct value than container port: incompatible attribute`. To work around this, use the solution posted [here](https://medium.com/tfogo/how-to-serve-your-website-on-port-80-or-443-using-aws-load-balancers-a3b84781d730).
 
-## Random production stuff
+## EC2 Deployment
 
 ### Cloning a repo to an EC2 instance
 You will need to copy your public and private ssh keys to your instance. Follow the instructions [here](https://stackoverflow.com/questions/51380792/git-clone-ec2-instance-permissions-error). To clone a single branch, run `git clone -b <branch_name> --single-branch <git_repo_url>`
