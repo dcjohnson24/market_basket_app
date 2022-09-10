@@ -43,15 +43,9 @@ services:
     command: nginx -g "daemon off;"
     volumes:
       - static_assets:/app/static
-      - ./deployment/certbot/www/:/var/www/certbot:ro
-      - ./deployment/nginx/conf/market_basket_app_docker.conf:/etc/nginx/conf.d/market_basket_app_docker.conf:ro
     depends_on: 
       - "web"
   
-  certbot:
-    image: certbot/certbot:v1.19.0
-    volumes:
-      - ./deployment/certbot/www/:/var/www/certbot:rw
   
 volumes:
   static_assets:

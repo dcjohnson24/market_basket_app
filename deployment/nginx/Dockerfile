@@ -6,6 +6,11 @@ COPY --chown=nginx:nginx nginx.conf /etc/nginx/
 RUN rm /etc/nginx/conf.d/default.conf
 ARG project_conf
 COPY --chown=nginx:nginx ./conf/$project_conf /etc/nginx/conf.d/
+COPY --chown=nginx:nginx ./conf/ /etc/letsencrypt/live/www.dealsinmyshop.ml/
+COPY --chown=nginx:nginx ./conf/privkey.pem /etc/letsencrypt/
+COPY --chown=nginx:nginx ./conf/ssl-dhparams.pem /etc/letsencrypt/
+COPY --chown=nginx:nginx ./conf/options-ssl-nginx.conf /etc/letsencrypt/
+
 
 RUN chown -R nginx:nginx /var/cache/nginx && \
         chmod -R 755 /var/cache/nginx && \
