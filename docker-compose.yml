@@ -1,0 +1,55 @@
+# Docker compose file compatible with AWS Fargate i.e. no volumes 
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: "."
+      args:
+        - "FLASK_ENV=${FLASK_ENV:-development}"
+    command: flask run -h 0.0.0.0
+    ports: 
+      - 5000:5000
+    env_file:
+      - ".env.dev"
+    depends_on: 
+      - "redis"
+
+  worker:
+    build:
+      context: "."
+      args:
+        - "FLASK_ENV=${FLASK_ENV:-development}"
+    command: celery -A celery_worker.celery worker --loglevel=INFO
+    env_file:
+      - ".env.dev"
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: 3s
+    depends_on:
+    - "web"
+    - "redis"
+  
+  db:
+    env_file: 
+      - ".env.dev"
+    image: postgres:13.4
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports: 
+      - 5432:5432
+
+  redis:
+    env_file:
+      - ".env.dev"
+    image: "redis:6.2.5"
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: 3s
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+  postgres_data:

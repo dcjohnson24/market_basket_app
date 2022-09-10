@@ -1,4 +1,4 @@
-mlxtend==0.17.3
+mlxtend==0.19.0
 pandas==1.1.2
 numpy==1.22.0
 ipython==7.31.1
@@ -6,6 +6,7 @@ matplotlib==3.3.2
 ipykernel==5.3.4
 flake8==3.8.4
 xlrd==1.2.0
+openpyxl==3.0.7
 networkx==2.5
 seaborn==0.11.0
 plotly==4.11.0
@@ -14,8 +15,10 @@ Flask-SQLAlchemy==2.5.1
 python-dotenv==0.14.0
 gunicorn==20.0.4
 PyMySQL==0.10.1
-sentry-sdk[flask]==1.0.0
+sentry-sdk[flask]==1.4.1
 celery==5.2.2
+>>>>>>> main
 redis==3.5.3
 supervisor==4.2.1
 gevent==21.1.2
+psycopg2==2.9.1

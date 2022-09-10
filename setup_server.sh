@@ -7,18 +7,18 @@
 # copy supervisor config of repo to /etc/supervisor/conf.d/
 # make a directory for the celery logs /var/log/supervisor/
 # change permissions on /var/log/supervisor directory to 777
-LIST_OF_APPS="virtualenv supervisor nginx redis-server sqlite3"
-echo "Installing packages $LIST_OF_APPS"
+LIST_OF_APPS="virtualenv supervisor nginx redis-server certbot python3-certbot-nginx"
+echo "--> Installing packages $LIST_OF_APPS"
 sudo apt-get update -y && sudo apt-get install -y $LIST_OF_APPS
 
-echo "Copying nginx and supervisor configs"
-sudo cp deployment/nginx/market_basket_app /etc/nginx/sites-available/
+echo "--> Copying nginx and supervisor configs"
+sudo cp deployment/nginx/conf/market_basket_app /etc/nginx/sites-available/
 sudo cp deployment/supervisor/configs/conf.d/* /etc/supervisor/conf.d/
 
-echo "Creating log folder for supervisor"
+echo "--> Creating log folder for supervisor"
 sudo mkdir -p /var/log/supervisor
 sudo chmod 777 /var/log/supervisor
 
-echo "Creating log folder for celery"
+echo "-- > Creating log folder for celery"
 sudo mkdir -p /var/log/celery
 sudo chmod 777 /var/log/celery
