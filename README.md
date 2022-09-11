@@ -4,7 +4,10 @@ A simple Flask app that serves a `plotly` network graph, heatmap, or table of as
 
 The user will upload data in `.csv`, `.xls`, or `.xlsx` format. The data is expected to contain the columns `InvoiceNo`, `Description`, and `Quantity`. After uploading the data, the user will select the preferred metric for these plots such as 'confidence', 'lift', or 'leverage'.
 
-Run the app locally with `docker compose up -d`. The app should be accessible on port 5000. Docker and Docker compose installations instructions can be found [here](https://docs.docker.com/get-docker/) and [here](https://docs.docker.com/compose/install/). Note that you should install Compose version 2. You can also run `./install_docker.sh`.
+## Running the app locally
+Install [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/). Compose version 2 is recommended. You can also run `./install_docker.sh`. Run the app locally with `docker compose up -d`. The app should be accessible on port 5000.
+
+![landing](images/market-basket-app-landing.png)
 
 
 ## Docker Fargate Deployment
